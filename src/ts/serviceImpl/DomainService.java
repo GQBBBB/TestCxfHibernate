@@ -82,7 +82,7 @@ public class DomainService implements IDomainService {
         return tm;
     }
 
-    //获得快件列表
+    // 获得快件列表
     @Override
     public List<ExpressSheet> getExpressList(String property, String restrictions, String value) {
         List<ExpressSheet> list = new ArrayList<ExpressSheet>();
@@ -118,7 +118,7 @@ public class DomainService implements IDomainService {
 //		return list;
 //	}
 
-    //获得包裹中的所有快递单
+    // 获得包裹中的所有快递单
     @Override
     public List<ExpressSheet> getExpressListInPackage(String packageId) {
         List<ExpressSheet> list = new ArrayList<ExpressSheet>();
@@ -126,14 +126,14 @@ public class DomainService implements IDomainService {
         return list;
     }
 
-    //获得快递单
+    // 获得快递单
     @Override
     public Response getExpressSheet(String id) {
         ExpressSheet es = expressSheetDao.get(id);
         return Response.ok(es).header("EntityClass", "ExpressSheet").build();
     }
 
-    //新建快递单
+    // 新建快递单
     @Override
     public Response newExpressSheet(String id, int uid) {
         ExpressSheet es = null;
@@ -168,12 +168,24 @@ public class DomainService implements IDomainService {
             return Response.serverError().entity(e.getMessage()).build();
         }
     }
-    
-    //保存快递单
+
+    // 保存快递单
     @Override
     public Response saveExpressSheet(ExpressSheet obj) {
         try {
-            // ExpressSheet nes = expressSheetDao.get(obj.getID());
+            // 生成ExpressSheet 的ID
+            while (true) {
+                String id = String.valueOf(System.currentTimeMillis());
+                if (id.length() < 25) {
+                } else {
+                    id = id.substring(0, 24);
+                }
+                if (expressSheetDao.get(id) == null) {
+                    obj.setID(id);
+                    break;
+                }
+            }
+            
             if (obj.getStatus() != ExpressSheet.STATUS.STATUS_CREATED) {
                 return Response.ok("快件运单已付运!无法保存更改!").header("EntityClass", "E_ExpressSheet").build();
             }
@@ -184,7 +196,7 @@ public class DomainService implements IDomainService {
         }
     }
 
-    //接收快件
+    // 接收快件
     @Override
     public Response ReceiveExpressSheetId(String id, int uid) {
         try {
@@ -202,14 +214,14 @@ public class DomainService implements IDomainService {
         }
     }
 
-    //分发快件
+    // 分发快件
     @Override
     public Response DispatchExpressSheet(String id, int uid) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    //快件移入包裹
+    // 快件移入包裹
     public boolean MoveExpressIntoPackage(String id, String targetPkgId) {
         TransPackage targetPkg = transPackageDao.get(targetPkgId);
         if ((targetPkg.getStatus() > 0) && (targetPkg.getStatus() < 3)) { // 包裹的状态快点定义,打开的包裹或者货篮才能操作==================================================================
@@ -224,7 +236,7 @@ public class DomainService implements IDomainService {
         return true;
     }
 
-    //快件从包裹中移除
+    // 快件从包裹中移除
     public boolean MoveExpressFromPackage(String id, String sourcePkgId) {
         TransPackage sourcePkg = transPackageDao.get(sourcePkgId);
         if ((sourcePkg.getStatus() > 0) && (sourcePkg.getStatus() < 3)) {
@@ -237,7 +249,7 @@ public class DomainService implements IDomainService {
         return true;
     }
 
-    //快件在包裹间移动
+    // 快件在包裹间移动
     public boolean MoveExpressBetweenPackage(String id, String sourcePkgId, String targetPkgId) {
         // 需要加入事务机制
         MoveExpressFromPackage(id, sourcePkgId);
@@ -245,7 +257,7 @@ public class DomainService implements IDomainService {
         return true;
     }
 
-    //提交快递单ID
+    // 提交快递单ID
     @Override
     public Response DeliveryExpressSheetId(String id, int uid) {
         try {
@@ -274,7 +286,7 @@ public class DomainService implements IDomainService {
         }
     }
 
-    //获得包裹列表
+    // 获得包裹列表
     @Override
     public List<TransPackage> getTransPackageList(String property, String restrictions, String value) {
         List<TransPackage> list = new ArrayList<TransPackage>();
@@ -289,14 +301,14 @@ public class DomainService implements IDomainService {
         return list;
     }
 
-    //获得包裹
+    // 获得包裹
     @Override
     public Response getTransPackage(String id) {
         TransPackage es = transPackageDao.get(id);
         return Response.ok(es).header("EntityClass", "TransPackage").build();
     }
 
-    //新建包裹
+    // 新建包裹
     @Override
     public Response newTransPackage(String id, int uid) {
         try {
@@ -311,7 +323,7 @@ public class DomainService implements IDomainService {
         }
     }
 
-    //保存包裹
+    // 保存包裹
     @Override
     public Response saveTransPackage(TransPackage obj) {
         try {
