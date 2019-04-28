@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
+
 import ts.daoImpl.CustomerInfoDao;
 import ts.daoImpl.ExpressSheetDao;
 import ts.daoImpl.TransHistoryDao;
@@ -173,13 +174,9 @@ public class DomainService implements IDomainService {
     @Override
     public Response saveExpressSheet(ExpressSheet obj) {
         try {
-            // 生成ExpressSheet 的ID
+            // 生成 ExpressSheet 的ID
             while (true) {
                 String id = String.valueOf(System.currentTimeMillis());
-                if (id.length() < 25) {
-                } else {
-                    id = id.substring(0, 24);
-                }
                 if (expressSheetDao.get(id) == null) {
                     obj.setID(id);
                     break;
