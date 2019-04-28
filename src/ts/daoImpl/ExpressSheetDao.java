@@ -25,9 +25,6 @@ public class ExpressSheetDao extends BaseDao<ExpressSheet,String> {
 	//重写的get方法,将客户的区域字符串加入
 	public ExpressSheet get(String id) {
 		ExpressSheet es = super.get(id);
-		if(es == null) {
-		    return null;
-		}
 		CustomerInfo ci = es.getRecever();
 		if(ci!= null)
 			ci.setRegionString(regionDao.getRegionNameByID(ci.getRegionCode()));	//获取区域的名字字符串
