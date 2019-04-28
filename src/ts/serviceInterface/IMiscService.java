@@ -86,7 +86,7 @@ public interface IMiscService {
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/doLogin/{uid}/{pwd}") 
-	public boolean doLogin(@PathParam("uid") int uid, @PathParam("pwd") String pwd);
+	public Response doLogin(@PathParam("uid") int uid, @PathParam("pwd") String pwd);
     
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })

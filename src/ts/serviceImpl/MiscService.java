@@ -184,14 +184,14 @@ public class MiscService implements IMiscService {
     }
 
     @Override
-    public boolean doLogin(int uid, String pwd) {
+    public Response doLogin(int uid, String pwd) {
         UserInfo userInfo = userInfoDao.get(uid);
         if (userInfo != null) {
             if (userInfo.getPWD().equals(pwd)) {
-                return true;
+                return Response.ok(userInfo).header("EntityClass", "UserInfo").build();
             }
         }
-        return false;
+        return Response.ok("false").header("EntityClass", "UserInfo").build();
     }
 
     @Override
