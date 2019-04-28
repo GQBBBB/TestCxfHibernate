@@ -16,7 +16,12 @@ public class UserInfoDao extends BaseDao<UserInfo, Integer> {
     }
 
     public UserInfo get(int id) {
-        UserInfo userInfo = super.get(id);;
+        UserInfo userInfo;
+        try {
+            userInfo = super.get(id);
+        } catch (Exception e) {
+            return null;
+        }
         return userInfo;
     }
 }
