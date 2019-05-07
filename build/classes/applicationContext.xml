@@ -77,6 +77,9 @@
     <bean id="packageRouteDao" class="ts.daoImpl.PackageRouteDao">
         <property name="sessionFactory" ref="sessionFactory"></property>
     </bean>
+    <bean id="usersPackageDao" class="ts.daoImpl.UsersPackageDao">
+        <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
 
     <!-- REST服务的注解例子 -->
     <jaxrs:server id="Service" address="/REST">
@@ -94,6 +97,7 @@
                 <property name="transPackageContentDao" ref="transPackageContentDao"></property>
                 <property name="userInfoDao" ref="userInfoDao"></property>
                 <property name="packageRouteDao" ref="packageRouteDao"></property>
+                <property name="usersPackageDao" ref="usersPackageDao"></property>
             </bean>
         </jaxrs:serviceBeans>
 

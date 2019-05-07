@@ -188,10 +188,10 @@ public class MiscService implements IMiscService {
         UserInfo userInfo = userInfoDao.get(uid);
         if (userInfo != null) {
             if (userInfo.getPWD().equals(pwd)) {
-                return Response.ok(userInfo).header("EntityClass", "UserInfo").build();
+                return Response.ok(userInfo).header("EntityClass", "login").build();
             }
         }
-        return Response.ok("false").header("EntityClass", "UserInfo").build();
+        return Response.ok("false").header("EntityClass", "login").build();
     }
 
     @Override

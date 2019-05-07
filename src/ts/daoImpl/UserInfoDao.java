@@ -24,4 +24,11 @@ public class UserInfoDao extends BaseDao<UserInfo, Integer> {
         }
         return userInfo;
     }
+
+    public String setReceivePackageID(String UID, String receivePackageID) {
+        UserInfo userInfo = get(Integer.parseInt(UID));
+        userInfo.setReceivePackageID(receivePackageID);
+        super.update(userInfo);
+        return userInfo.getDptID();
+    }
 }

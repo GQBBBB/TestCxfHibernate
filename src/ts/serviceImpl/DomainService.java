@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
+import javafx.scene.control.Tab;
 import ts.daoImpl.CustomerInfoDao;
 import ts.daoImpl.ExpressSheetDao;
 import ts.daoImpl.PackageRouteDao;
@@ -15,12 +17,15 @@ import ts.daoImpl.TransHistoryDao;
 import ts.daoImpl.TransPackageContentDao;
 import ts.daoImpl.TransPackageDao;
 import ts.daoImpl.UserInfoDao;
+import ts.daoImpl.UsersPackageDao;
 import ts.model.CustomerInfo;
 import ts.model.ExpressSheet;
 import ts.model.PackageRoute;
 import ts.model.TransHistory;
 import ts.model.TransPackage;
 import ts.model.TransPackageContent;
+import ts.model.UserInfo;
+import ts.model.UsersPackage;
 import ts.serviceInterface.IDomainService;
 
 public class DomainService implements IDomainService {
@@ -31,6 +36,15 @@ public class DomainService implements IDomainService {
     private TransPackageContentDao transPackageContentDao;
     private PackageRouteDao packageRouteDao;
     private UserInfoDao userInfoDao;
+    private UsersPackageDao usersPackageDao;
+    
+    public UsersPackageDao getUsersPackageDao() {
+        return usersPackageDao;
+    }
+
+    public void setUsersPackageDao(UsersPackageDao dao) {
+        this.usersPackageDao = dao;
+    }
     
     public PackageRouteDao getPackageRouteDao() {
         return packageRouteDao;
@@ -347,5 +361,27 @@ public class DomainService implements IDomainService {
     @Override
     public List<PackageRoute> getPackageRouteList(String packageID) {
         return packageRouteDao.getPackageRouteList(packageID);
+    }
+    
+    //根据UID获得receivePackageID
+    public Response getReceivePackageID(String UID){
+        //设置receivePackageID为 UID + 时间 共23位
+        String receivePackageID = new StringBuilder(UID).append(System.currentTimeMillis()).toString();
+        //设置userinfo表的receivePackageID并返回DptID
+        String dptID = userInfoDao.setReceivePackageID(UID, receivePackageID);System.out.println(dptID);
+        //设置transpackage并赋值ID和TargetNode(=DptID) 并保存
+        TransPackage transPackage = new TransPackage();
+        transPackage.setID(receivePackageID);
+        transPackage.setTargetNode(dptID);
+        transPackage.setStatus(0);
+        transPackage.setCreateTime(getCurrentDate());
+        transPackageDao.save(transPackage);
+        //设置userspackage
+        UsersPackage usersPackage = new UsersPackage();
+        usersPackage.setUserU(userInfoDao.get(Integer.parseInt(UID)));
+        usersPackage.setPkg(transPackage);
+        usersPackageDao.save(usersPackage);
+        
+        return Response.ok(receivePackageID).header("EntityClass", "ReceivePackageID").build();
     }
 }
