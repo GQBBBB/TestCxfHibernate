@@ -10,12 +10,14 @@ import javax.ws.rs.core.Response;
 
 import ts.daoImpl.CustomerInfoDao;
 import ts.daoImpl.ExpressSheetDao;
+import ts.daoImpl.PackageRouteDao;
 import ts.daoImpl.TransHistoryDao;
 import ts.daoImpl.TransPackageContentDao;
 import ts.daoImpl.TransPackageDao;
 import ts.daoImpl.UserInfoDao;
 import ts.model.CustomerInfo;
 import ts.model.ExpressSheet;
+import ts.model.PackageRoute;
 import ts.model.TransHistory;
 import ts.model.TransPackage;
 import ts.model.TransPackageContent;
@@ -27,8 +29,16 @@ public class DomainService implements IDomainService {
     private TransPackageDao transPackageDao;
     private TransHistoryDao transHistoryDao;
     private TransPackageContentDao transPackageContentDao;
-
+    private PackageRouteDao packageRouteDao;
     private UserInfoDao userInfoDao;
+    
+    public PackageRouteDao getPackageRouteDao() {
+        return packageRouteDao;
+    }
+
+    public void setPackageRouteDao(PackageRouteDao dao) {
+        this.packageRouteDao = dao;
+    }
 
     public ExpressSheetDao getExpressSheetDao() {
         return expressSheetDao;
@@ -285,7 +295,7 @@ public class DomainService implements IDomainService {
         }
     }
 
-    // 获得包裹列表
+    // 获得包裹列表  有错误，会循环引用
     @Override
     public List<TransPackage> getTransPackageList(String property, String restrictions, String value) {
         List<TransPackage> list = new ArrayList<TransPackage>();
@@ -331,5 +341,11 @@ public class DomainService implements IDomainService {
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
+    }
+
+    //获得包裹坐标信息
+    @Override
+    public List<PackageRoute> getPackageRouteList(String packageID) {
+        return packageRouteDao.getPackageRouteList(packageID);
     }
 }

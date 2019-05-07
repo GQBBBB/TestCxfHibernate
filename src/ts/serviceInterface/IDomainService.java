@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response;
 
 import ts.model.CustomerInfo;
 import ts.model.ExpressSheet;
+import ts.model.PackageRoute;
 import ts.model.TransPackage;
 
 @Path("/Domain")	//业务操作
@@ -83,5 +84,11 @@ public interface IDomainService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/saveTransPackage") 
 	public Response saveTransPackage(TransPackage obj);
+    
+  //包裹坐标信息操作访问接口=======================================================================
+    @GET
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/getPackageRouteList/{PackageID}") 
+    public List<PackageRoute> getPackageRouteList(@PathParam("PackageID")String packageID);
     
 }

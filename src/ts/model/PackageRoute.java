@@ -17,6 +17,7 @@ import java.util.Date;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @org.hibernate.annotations.Proxy(lazy=false)
@@ -92,6 +93,7 @@ public class PackageRoute implements Serializable {
 		this.pkg = value;
 	}
 	
+	@XmlTransient
 	public TransPackage getPkg() {
 		return pkg;
 	}

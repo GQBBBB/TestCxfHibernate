@@ -68,7 +68,7 @@ public class BaseDao<T,PK extends Serializable> extends HibernateDaoSupport impl
         	criteria.addOrder(Order.asc(orderBy));
         else
         	criteria.addOrder(Order.desc(orderBy));
-
+        //System.out.println(criteria);
         return (List<T>) getHibernateTemplate().findByCriteria(criteria);
 	}
 
