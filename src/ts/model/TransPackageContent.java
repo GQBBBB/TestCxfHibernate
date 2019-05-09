@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @org.hibernate.annotations.Proxy(lazy=false)
 @Table(name="TransPackageContent")
@@ -52,6 +53,7 @@ public class TransPackageContent implements Serializable {
 		this.express = value;
 	}
 	
+	@XmlTransient
 	public ExpressSheet getExpress() {
 		return express;
 	}
@@ -60,6 +62,7 @@ public class TransPackageContent implements Serializable {
 		this.pkg = value;
 	}
 	
+	@XmlTransient
 	public TransPackage getPkg() {
 		return pkg;
 	}

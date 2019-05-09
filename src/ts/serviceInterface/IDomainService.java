@@ -111,11 +111,25 @@ public interface IDomainService {
     @Path("/cleanPackageID/{UID}/{flag}")
     public Response cleanPackageID(@PathParam("UID") String UID, @PathParam("flag") String flag);
 
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/getTaskList/{UID}")
+    public List<ExpressSheet> getTaskList(@PathParam("UID") String UID);
+
     // 快递员拆包接口=======================================================================
     @GET
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/unpacking/{UID}/{PackageID}/{x}/{y}")
     public Response unpacking(@PathParam("UID") String UID, @PathParam("PackageID") String PackageID,
             @PathParam("x") float x, @PathParam("y") float y);
+
+    // 快件从包裹中移除
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/MoveExpressFromPackage/{expressSheetID}/{sourcePkgId}")
+    public Response MoveExpressFromPackage(@PathParam("expressSheetID") String expressSheetID, @PathParam("sourcePkgId") String sourcePkgId);
 
 }

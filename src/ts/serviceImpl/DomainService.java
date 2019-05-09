@@ -42,6 +42,15 @@ public class DomainService implements IDomainService {
     private PackageRouteDao packageRouteDao;
     private UserInfoDao userInfoDao;
     private UsersPackageDao usersPackageDao;
+    private CustomerInfoDao customerInfoDao;
+
+    public CustomerInfoDao getCustomerInfoDao() {
+        return customerInfoDao;
+    }
+
+    public void setCustomerInfoDao(CustomerInfoDao dao) {
+        this.customerInfoDao = dao;
+    }
 
     public UsersPackageDao getUsersPackageDao() {
         return usersPackageDao;
@@ -224,7 +233,7 @@ public class DomainService implements IDomainService {
         }
     }
 
-    // 接收快件
+    // 揽收快件
     @Override
     public Response receiveExpressSheet(ExpressSheet es, int uid) {
         // System.out.println("sss" + es + "dddd" + uid);
@@ -240,7 +249,7 @@ public class DomainService implements IDomainService {
             TransPackageContent transPackageContent = new TransPackageContent();
             transPackageContent.setExpress(es);
             transPackageContent.setPkg(transPackageDao.get(userInfoDao.get(uid).getReceivePackageID()));
-            transPackageContent.setStatus(TransPackage.STATUS.STATUS_COLLECT);
+            transPackageContent.setStatus(TransPackageContent.STATUS.STATUS_ACTIVE);
             transPackageContentDao.save(transPackageContent);
 
             return Response.ok(es).header("EntityClass", "R_ExpressSheet").build();
@@ -272,16 +281,17 @@ public class DomainService implements IDomainService {
     }
 
     // 快件从包裹中移除
-    public boolean MoveExpressFromPackage(String id, String sourcePkgId) {
-        TransPackage sourcePkg = transPackageDao.get(sourcePkgId);
-        if ((sourcePkg.getStatus() > 0) && (sourcePkg.getStatus() < 3)) {
-            return false;
+    public Response MoveExpressFromPackage(String expressSheetID, String sourcePkgId) {
+        int expressSheetStatus = expressSheetDao.get(expressSheetID).getStatus();
+        //当包裹为新建，分拣，交付状态时
+        if(expressSheetStatus == 0 || expressSheetStatus == 2 || expressSheetStatus == 5) {
+            return Response.ok("该快件无法从包裹中移出").header("EntityClass", "U_ExpressSheet").build();
         }
-
-        TransPackageContent pkg_add = transPackageContentDao.get(id, sourcePkgId);
-        pkg_add.setStatus(TransPackageContent.STATUS.STATUS_OUTOF_PACKAGE);
-        transPackageContentDao.save(pkg_add);
-        return true;
+        
+        TransPackageContent transPackageContent = transPackageContentDao.get(expressSheetID, sourcePkgId);
+        transPackageContent.setStatus(TransPackageContent.STATUS.STATUS_OUTOF_PACKAGE);
+        transPackageContentDao.update(transPackageContent);
+        return Response.ok("该快件从包裹中移出").header("EntityClass", "U_ExpressSheet").build();
     }
 
     // 快件在包裹间移动
@@ -392,12 +402,12 @@ public class DomainService implements IDomainService {
         String receivePackageID = new StringBuilder(UID).append(System.currentTimeMillis()).toString();
         // 设置userinfo表的receivePackageID, URull并返回DptID
         String dptID = userInfoDao.setReceivePackageID(UID, receivePackageID);
-        System.out.println(dptID);
+        //System.out.println(dptID);
         // 设置transpackage并赋值ID和TargetNode(=DptID) 并保存
         TransPackage transPackage = new TransPackage();
         transPackage.setID(receivePackageID);
         transPackage.setTargetNode(dptID);
-        transPackage.setStatus(0);
+        transPackage.setStatus(TransPackage.STATUS.STATUS_COLLECT);
         transPackage.setCreateTime(getCurrentDate());
         transPackageDao.save(transPackage);
         // 设置userspackage
@@ -427,25 +437,45 @@ public class DomainService implements IDomainService {
 
     }
 
+    // 快递员获得任务列表 待完成。。。。。。。。。。
+    public List<ExpressSheet> getTaskList(String UID) {
+        List<ExpressSheet> expressSheetList = null;
+        UserInfo userInfo = userInfoDao.get(Integer.parseInt(UID));
+        // 获得用户角色
+        int uRull = userInfo.getURull();
+        
+//        // 获取快递员所在区域regionCode
+//        String regionCode = userInfo.getDptID().substring(0, 6);
+//        List<CustomerInfo> customerInfoList = customerInfoDao.findByRegionCode(regionCode);
+//        for (CustomerInfo customerInfo : customerInfoList) {
+//            int ID = customerInfo.getID();
+//            // 获取sender为id 和 status为0 的快件
+//            List<ExpressSheet> list = expressSheetDao.findBySenderAndStatus(ID);
+//            expressSheetList.addAll(list);
+//        }
+        return expressSheetList;
+
+    }
+
     // 快递员拆包接口
     public Response unpacking(String UID, String PackageID, float x, float y) {
-        //根据packageID提取派送人员UID
+        // 根据packageID提取派送人员UID
         int lastUID = usersPackageDao.getUIDByPackageID(PackageID);
-        //设置拆包人员
+        // 设置拆包人员
         UserInfo userInfo = userInfoDao.get(Integer.parseInt(UID));
         userInfo.setDelivePackageID(PackageID);
         userInfo.setURull(UserInfo.URull.URull_UNPACKING);
         userInfoDao.update(userInfo);
-        //更改包裹状态
+        // 更改包裹状态
         TransPackage transPackage = transPackageDao.get(PackageID);
         transPackage.setStatus(TransPackage.STATUS.STATUS_SORTING);
         transPackageDao.update(transPackage);
-        //添加到usersPackage
+        // 添加到usersPackage
         UsersPackage usersPackage = new UsersPackage();
         usersPackage.setUserU(userInfo);
         usersPackage.setPkg(transPackage);
         usersPackageDao.save(usersPackage);
-        //添加到transHistory
+        // 添加到transHistory
         TransHistory transHistory = new TransHistory();
         transHistory.setPkg(transPackage);
         transHistory.setActTime(getCurrentDate());
@@ -454,7 +484,7 @@ public class DomainService implements IDomainService {
         transHistory.setX(x);
         transHistory.setY(y);
         transHistoryDao.save(transHistory);
-        
+
         return Response.ok(PackageID).header("EntityClass", "UnpackPackageID").build();
     }
 }
