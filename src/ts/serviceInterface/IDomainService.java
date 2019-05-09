@@ -104,11 +104,18 @@ public interface IDomainService {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/getReceivePackageID/{UID}")
     public Response getReceivePackageID(@PathParam("UID") String UID);
-    
+
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/cleanPackageID/{UID}/{flag}")
     public Response cleanPackageID(@PathParam("UID") String UID, @PathParam("flag") String flag);
+
+    // 快递员拆包接口=======================================================================
+    @GET
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/unpacking/{UID}/{PackageID}/{x}/{y}")
+    public Response unpacking(@PathParam("UID") String UID, @PathParam("PackageID") String PackageID,
+            @PathParam("x") float x, @PathParam("y") float y);
 
 }

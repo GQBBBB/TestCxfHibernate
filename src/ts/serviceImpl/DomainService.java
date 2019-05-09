@@ -7,7 +7,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import javafx.scene.control.Tab;
@@ -223,20 +227,20 @@ public class DomainService implements IDomainService {
     // 接收快件
     @Override
     public Response receiveExpressSheet(ExpressSheet es, int uid) {
-        //System.out.println("sss" + es + "dddd" + uid);
+        // System.out.println("sss" + es + "dddd" + uid);
         try {
             if (es.getStatus() != ExpressSheet.STATUS.STATUS_CREATED) {
                 return Response.ok("快件运单状态错误!无法收件!").header("EntityClass", "ER_ExpressSheet").build();
             }
             es.setAccepter(String.valueOf(uid));
             es.setAccepteTime(getCurrentDate());
-            es.setStatus(ExpressSheet.STATUS.STATUS_COLLECT);//System.out.println(es);
+            es.setStatus(ExpressSheet.STATUS.STATUS_COLLECT);// System.out.println(es);
             expressSheetDao.update(es);
 
             TransPackageContent transPackageContent = new TransPackageContent();
             transPackageContent.setExpress(es);
             transPackageContent.setPkg(transPackageDao.get(userInfoDao.get(uid).getReceivePackageID()));
-            transPackageContent.setStatus(0);
+            transPackageContent.setStatus(TransPackage.STATUS.STATUS_COLLECT);
             transPackageContentDao.save(transPackageContent);
 
             return Response.ok(es).header("EntityClass", "R_ExpressSheet").build();
@@ -404,22 +408,53 @@ public class DomainService implements IDomainService {
 
         return Response.ok(receivePackageID).header("EntityClass", "ReceivePackageID").build();
     }
-    
-    //清理快递员三个PackageID
+
+    // 清理快递员三个PackageID
     public Response cleanPackageID(String UID, String flag) {
         UserInfo userInfo = userInfoDao.get(Integer.parseInt(UID));
         userInfo.setURull(0);
-        if(String.valueOf(flag.charAt(0)).equals("1")) {
+        if (String.valueOf(flag.charAt(0)).equals("1")) {
             userInfo.setReceivePackageID(null);
         }
-        if(String.valueOf(flag.charAt(1)).equals("1")) {
+        if (String.valueOf(flag.charAt(1)).equals("1")) {
             userInfo.setDelivePackageID(null);
         }
-        if(String.valueOf(flag.charAt(2)).equals("1")) {
+        if (String.valueOf(flag.charAt(2)).equals("1")) {
             userInfo.setTransPackageID(null);
         }
         userInfoDao.update(userInfo);
         return Response.ok("删除成功").header("EntityClass", "PackageID").build();
+
+    }
+
+    // 快递员拆包接口
+    public Response unpacking(String UID, String PackageID, float x, float y) {
+        //根据packageID提取派送人员UID
+        int lastUID = usersPackageDao.getUIDByPackageID(PackageID);
+        //设置拆包人员
+        UserInfo userInfo = userInfoDao.get(Integer.parseInt(UID));
+        userInfo.setDelivePackageID(PackageID);
+        userInfo.setURull(UserInfo.URull.URull_UNPACKING);
+        userInfoDao.update(userInfo);
+        //更改包裹状态
+        TransPackage transPackage = transPackageDao.get(PackageID);
+        transPackage.setStatus(TransPackage.STATUS.STATUS_SORTING);
+        transPackageDao.update(transPackage);
+        //添加到usersPackage
+        UsersPackage usersPackage = new UsersPackage();
+        usersPackage.setUserU(userInfo);
+        usersPackage.setPkg(transPackage);
+        usersPackageDao.save(usersPackage);
+        //添加到transHistory
+        TransHistory transHistory = new TransHistory();
+        transHistory.setPkg(transPackage);
+        transHistory.setActTime(getCurrentDate());
+        transHistory.setUIDFrom(lastUID);
+        transHistory.setUIDTo(Integer.parseInt(UID));
+        transHistory.setX(x);
+        transHistory.setY(y);
+        transHistoryDao.save(transHistory);
         
+        return Response.ok("拆包成功").header("EntityClass", "unpacking").build();
     }
 }

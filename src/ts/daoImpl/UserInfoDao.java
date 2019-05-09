@@ -1,13 +1,7 @@
 package ts.daoImpl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hibernate.criterion.Restrictions;
 
 import ts.daoBase.BaseDao;
-import ts.model.CustomerInfo;
-import ts.model.ExpressSheet;
 import ts.model.UserInfo;
 
 public class UserInfoDao extends BaseDao<UserInfo, Integer> {
@@ -32,4 +26,5 @@ public class UserInfoDao extends BaseDao<UserInfo, Integer> {
         super.update(userInfo);
         return userInfo.getDptID();
     }
+    
 }
