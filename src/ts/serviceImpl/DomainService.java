@@ -455,6 +455,6 @@ public class DomainService implements IDomainService {
         transHistory.setY(y);
         transHistoryDao.save(transHistory);
         
-        return Response.ok("²ð°ü³É¹¦").header("EntityClass", "unpacking").build();
+        return Response.ok(PackageID).header("EntityClass", "UnpackPackageID").build();
     }
 }
