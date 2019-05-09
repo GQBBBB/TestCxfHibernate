@@ -1,9 +1,9 @@
 package ts.serviceInterface;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -12,7 +12,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import ts.model.CustomerInfo;
 import ts.model.ExpressSheet;
 import ts.model.PackageRoute;
 import ts.model.TransPackage;
@@ -51,8 +50,8 @@ public interface IDomainService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Path("/receiveExpressSheet")
-    public Response receiveExpressSheet(ExpressSheet es, int uid);
+    @Path("/receiveExpressSheet/{uid}")
+    public Response receiveExpressSheet(ExpressSheet es, @PathParam("uid") int uid);
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -105,5 +104,11 @@ public interface IDomainService {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/getReceivePackageID/{UID}")
     public Response getReceivePackageID(@PathParam("UID") String UID);
+    
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/cleanPackageID/{UID}/{flag}")
+    public Response cleanPackageID(@PathParam("UID") String UID, @PathParam("flag") String flag);
 
 }

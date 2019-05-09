@@ -223,16 +223,14 @@ public class DomainService implements IDomainService {
     // 接收快件
     @Override
     public Response receiveExpressSheet(ExpressSheet es, int uid) {
-        System.out.println("1111" + es);
-//        ExpressSheet es = (ExpressSheet) list.get("es");
-//        String uid = (String) list.get("uid");
+        //System.out.println("sss" + es + "dddd" + uid);
         try {
             if (es.getStatus() != ExpressSheet.STATUS.STATUS_CREATED) {
-                return Response.ok("快件运单状态错误!无法收件!").header("EntityClass", "E_ExpressSheet").build();
+                return Response.ok("快件运单状态错误!无法收件!").header("EntityClass", "ER_ExpressSheet").build();
             }
             es.setAccepter(String.valueOf(uid));
             es.setAccepteTime(getCurrentDate());
-            es.setStatus(ExpressSheet.STATUS.STATUS_TRANSPORT);
+            es.setStatus(ExpressSheet.STATUS.STATUS_COLLECT);//System.out.println(es);
             expressSheetDao.update(es);
 
             TransPackageContent transPackageContent = new TransPackageContent();
@@ -241,7 +239,7 @@ public class DomainService implements IDomainService {
             transPackageContent.setStatus(0);
             transPackageContentDao.save(transPackageContent);
 
-            return Response.ok("收件成功").header("EntityClass", "ExpressSheet").build();
+            return Response.ok(es).header("EntityClass", "R_ExpressSheet").build();
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
@@ -257,7 +255,7 @@ public class DomainService implements IDomainService {
     // 快件移入包裹
     public boolean MoveExpressIntoPackage(String id, String targetPkgId) {
         TransPackage targetPkg = transPackageDao.get(targetPkgId);
-        if ((targetPkg.getStatus() > 0) && (targetPkg.getStatus() < 3)) { // 包裹的状态快点定义,打开的包裹或者货篮才能操作==================================================================
+        if ((targetPkg.getStatus() > 0) && (targetPkg.getStatus() < 5)) { // 包裹的状态快点定义,打开的包裹或者货篮才能操作==================================================================
             return false;
         }
 
@@ -308,7 +306,7 @@ public class DomainService implements IDomainService {
 
             nes.setDeliver(String.valueOf(uid));
             nes.setDeliveTime(getCurrentDate());
-            nes.setStatus(ExpressSheet.STATUS.STATUS_DELIVERIED);
+            nes.setStatus(ExpressSheet.STATUS.STATUS_DELIVERY);
             expressSheetDao.save(nes);
             // 从派件包裹中删除
             MoveExpressFromPackage(nes.getID(), pkgId);
@@ -405,5 +403,23 @@ public class DomainService implements IDomainService {
         usersPackageDao.save(usersPackage);
 
         return Response.ok(receivePackageID).header("EntityClass", "ReceivePackageID").build();
+    }
+    
+    //清理快递员三个PackageID
+    public Response cleanPackageID(String UID, String flag) {
+        UserInfo userInfo = userInfoDao.get(Integer.parseInt(UID));
+        userInfo.setURull(0);
+        if(String.valueOf(flag.charAt(0)).equals("1")) {
+            userInfo.setReceivePackageID(null);
+        }
+        if(String.valueOf(flag.charAt(1)).equals("1")) {
+            userInfo.setDelivePackageID(null);
+        }
+        if(String.valueOf(flag.charAt(2)).equals("1")) {
+            userInfo.setTransPackageID(null);
+        }
+        userInfoDao.update(userInfo);
+        return Response.ok("删除成功").header("EntityClass", "PackageID").build();
+        
     }
 }
