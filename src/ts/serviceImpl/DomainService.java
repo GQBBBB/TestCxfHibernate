@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.PathParam;
@@ -37,7 +38,7 @@ public class DomainService implements IDomainService {
     private PackageRouteDao packageRouteDao;
     private UserInfoDao userInfoDao;
     private UsersPackageDao usersPackageDao;
-    
+
     public UsersPackageDao getUsersPackageDao() {
         return usersPackageDao;
     }
@@ -45,7 +46,7 @@ public class DomainService implements IDomainService {
     public void setUsersPackageDao(UsersPackageDao dao) {
         this.usersPackageDao = dao;
     }
-    
+
     public PackageRouteDao getPackageRouteDao() {
         return packageRouteDao;
     }
@@ -170,7 +171,7 @@ public class DomainService implements IDomainService {
 //			if(es.getStatus() != 0)
 //				return Response.ok(es).header("EntityClass", "L_ExpressSheet").build(); //已经存在,且不能更改
 //			else
-            return Response.ok("快件运单信息已经存在!\n无法创建!").header("EntityClass", "E_ExpressSheet").build(); // 已经存在
+//            return Response.ok("快件运单信息已经存在!\n无法创建!").header("EntityClass", "E_ExpressSheet").build(); // 已经存在
         }
         try {
             String pkgId = userInfoDao.get(uid).getReceivePackageID();
@@ -221,17 +222,26 @@ public class DomainService implements IDomainService {
 
     // 接收快件
     @Override
-    public Response ReceiveExpressSheetId(String id, int uid) {
+    public Response receiveExpressSheet(ExpressSheet es, int uid) {
+        System.out.println("1111" + es);
+//        ExpressSheet es = (ExpressSheet) list.get("es");
+//        String uid = (String) list.get("uid");
         try {
-            ExpressSheet nes = expressSheetDao.get(id);
-            if (nes.getStatus() != ExpressSheet.STATUS.STATUS_CREATED) {
+            if (es.getStatus() != ExpressSheet.STATUS.STATUS_CREATED) {
                 return Response.ok("快件运单状态错误!无法收件!").header("EntityClass", "E_ExpressSheet").build();
             }
-            nes.setAccepter(String.valueOf(uid));
-            nes.setAccepteTime(getCurrentDate());
-            nes.setStatus(ExpressSheet.STATUS.STATUS_TRANSPORT);
-            expressSheetDao.save(nes);
-            return Response.ok(nes).header("EntityClass", "ExpressSheet").build();
+            es.setAccepter(String.valueOf(uid));
+            es.setAccepteTime(getCurrentDate());
+            es.setStatus(ExpressSheet.STATUS.STATUS_TRANSPORT);
+            expressSheetDao.update(es);
+
+            TransPackageContent transPackageContent = new TransPackageContent();
+            transPackageContent.setExpress(es);
+            transPackageContent.setPkg(transPackageDao.get(userInfoDao.get(uid).getReceivePackageID()));
+            transPackageContent.setStatus(0);
+            transPackageContentDao.save(transPackageContent);
+
+            return Response.ok("收件成功").header("EntityClass", "ExpressSheet").build();
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
@@ -309,7 +319,7 @@ public class DomainService implements IDomainService {
         }
     }
 
-    // 获得包裹列表  有错误，会循环引用
+    // 获得包裹列表 有错误，会循环引用
     @Override
     public List<TransPackage> getTransPackageList(String property, String restrictions, String value) {
         List<TransPackage> list = new ArrayList<TransPackage>();
@@ -357,31 +367,43 @@ public class DomainService implements IDomainService {
         }
     }
 
-    //获得包裹坐标信息
+    // 获得包裹坐标信息
     @Override
     public List<PackageRoute> getPackageRouteList(String packageID) {
         return packageRouteDao.getPackageRouteList(packageID);
     }
-    
-    //根据UID获得receivePackageID
-    public Response getReceivePackageID(String UID){
-        //设置receivePackageID为 UID + 时间 共23位
+
+    // 设置包裹坐标信息
+    public Response setPackageRoute(String packageID, float x, float y) {
+        PackageRoute packageRoute = new PackageRoute();
+        packageRoute.setPkg(transPackageDao.get(packageID));
+        packageRoute.setX(x);
+        packageRoute.setY(y);
+        packageRoute.setTm(getCurrentDate());
+        packageRouteDao.save(packageRoute);
+        return Response.ok("ok").header("EntityClass", "PackageRoute").build();
+    }
+
+    // 根据UID获得receivePackageID
+    public Response getReceivePackageID(String UID) {
+        // 设置receivePackageID为 UID + 时间 共23位
         String receivePackageID = new StringBuilder(UID).append(System.currentTimeMillis()).toString();
-        //设置userinfo表的receivePackageID并返回DptID
-        String dptID = userInfoDao.setReceivePackageID(UID, receivePackageID);System.out.println(dptID);
-        //设置transpackage并赋值ID和TargetNode(=DptID) 并保存
+        // 设置userinfo表的receivePackageID, URull并返回DptID
+        String dptID = userInfoDao.setReceivePackageID(UID, receivePackageID);
+        System.out.println(dptID);
+        // 设置transpackage并赋值ID和TargetNode(=DptID) 并保存
         TransPackage transPackage = new TransPackage();
         transPackage.setID(receivePackageID);
         transPackage.setTargetNode(dptID);
         transPackage.setStatus(0);
         transPackage.setCreateTime(getCurrentDate());
         transPackageDao.save(transPackage);
-        //设置userspackage
+        // 设置userspackage
         UsersPackage usersPackage = new UsersPackage();
         usersPackage.setUserU(userInfoDao.get(Integer.parseInt(UID)));
         usersPackage.setPkg(transPackage);
         usersPackageDao.save(usersPackage);
-        
+
         return Response.ok(receivePackageID).header("EntityClass", "ReceivePackageID").build();
     }
 }

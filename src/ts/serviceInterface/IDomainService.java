@@ -1,5 +1,6 @@
 package ts.serviceInterface;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -47,11 +48,11 @@ public interface IDomainService {
     @Path("/saveExpressSheet")
     public Response saveExpressSheet(ExpressSheet obj);
 
-    @GET
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Path("/receiveExpressSheetId/id/{id}/uid/{uid}")
-    public Response ReceiveExpressSheetId(@PathParam("id") String id, @PathParam("uid") int uid);
+    @Path("/receiveExpressSheet")
+    public Response receiveExpressSheet(ExpressSheet es, int uid);
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
@@ -92,7 +93,13 @@ public interface IDomainService {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/getPackageRouteList/{PackageID}")
     public List<PackageRoute> getPackageRouteList(@PathParam("PackageID") String packageID);
-    
+
+    @GET
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/setPackageRoute/{PackageID}/{x}/{y}")
+    public Response setPackageRoute(@PathParam("PackageID") String packageID, @PathParam("x") float x,
+            @PathParam("y") float y);
+
     // 快递员揽收包裹访问接口=======================================================================
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
