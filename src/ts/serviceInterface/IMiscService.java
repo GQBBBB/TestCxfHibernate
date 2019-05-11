@@ -15,6 +15,7 @@ import ts.model.CodeNamePair;
 import ts.model.CustomerInfo;
 import ts.model.Region;
 import ts.model.TransNode;
+import ts.model.UserInfo;
 
 @Path("/Misc")
 public interface IMiscService {
@@ -34,10 +35,10 @@ public interface IMiscService {
     @Path("/getCustomerListByName/{name}") 
 	public List<CustomerInfo> getCustomerListByName(@PathParam("name")String name);
     
-    @GET
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Path("/getCustomerListByTelCode/{TelCode}") 
-	public List<CustomerInfo> getCustomerListByTelCode(@PathParam("TelCode")String TelCode);
+//    @GET
+//    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+//    @Path("/getCustomerListByTelCode/{TelCode}") 
+//	public List<CustomerInfo> getCustomerListByTelCode(@PathParam("TelCode")String TelCode);
     
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -92,6 +93,12 @@ public interface IMiscService {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/doLogOut/{uid}") 
 	public void doLogOut(@PathParam("uid") int uid);
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/register") 
+    public Response register(UserInfo userInfo);
 
 	public void RefreshSessionList();
 }

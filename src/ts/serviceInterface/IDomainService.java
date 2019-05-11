@@ -1,5 +1,6 @@
 package ts.serviceInterface;
 
+import java.util.HashSet;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Response;
 import ts.model.ExpressSheet;
 import ts.model.PackageRoute;
 import ts.model.TransPackage;
+import ts.model.UserInfo;
 
 @Path("/Domain") // 业务操作
 public interface IDomainService {
@@ -64,6 +66,12 @@ public interface IDomainService {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/deliveryExpressSheetId/id/{id}/uid/{uid}")
     public Response DeliveryExpressSheetId(@PathParam("id") String id, @PathParam("uid") int uid);
+    
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/getExpressSheetByTelCode/{telCode}")
+    public HashSet<ExpressSheet> getExpressSheetByTelCode(@PathParam("telCode") String telCode);
 
     // 包裹操作访问接口=======================================================================
     @GET
@@ -130,6 +138,20 @@ public interface IDomainService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/MoveExpressFromPackage/{expressSheetID}/{sourcePkgId}")
-    public Response MoveExpressFromPackage(@PathParam("expressSheetID") String expressSheetID, @PathParam("sourcePkgId") String sourcePkgId);
+    public Response MoveExpressFromPackage(@PathParam("expressSheetID") String expressSheetID,
+            @PathParam("sourcePkgId") String sourcePkgId);
+
+    // 快递员信息接口=======================================================================
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/changeUserInfo") 
+    public Response changeUserInfo(UserInfo userInfo);
+    
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/getUserInfoList") 
+    public List<UserInfo> getUserInfoList();
 
 }

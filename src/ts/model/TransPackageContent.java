@@ -52,8 +52,7 @@ public class TransPackageContent implements Serializable {
 	public void setExpress(ExpressSheet value) {
 		this.express = value;
 	}
-	
-	@XmlTransient
+
 	public ExpressSheet getExpress() {
 		return express;
 	}
@@ -62,7 +61,6 @@ public class TransPackageContent implements Serializable {
 		this.pkg = value;
 	}
 	
-	@XmlTransient
 	public TransPackage getPkg() {
 		return pkg;
 	}

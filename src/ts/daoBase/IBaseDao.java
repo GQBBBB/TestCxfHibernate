@@ -76,5 +76,5 @@ public interface IBaseDao<T,PK extends Serializable> {
     public void flush();
     
     public void clear();
-
+    
 }

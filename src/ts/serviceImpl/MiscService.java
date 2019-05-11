@@ -88,18 +88,18 @@ public class MiscService implements IMiscService {
         return customerInfoDao.findByName(name);
     }
 
-    // 根据tele获取用户信息
-    @Override
-    public List<CustomerInfo> getCustomerListByTelCode(String TelCode) {
-//		List<CustomerInfo> listci = customerInfoDao.findByTelCode(TelCode);
-//		List<CodeNamePair> listCN = new ArrayList<CodeNamePair>();
-//		for(CustomerInfo ci : listci){
-//			CodeNamePair cn = new CodeNamePair(String.valueOf(ci.getID()),ci.getName());
-//			listCN.add(cn);
-//		}
-//		return listCN;
-        return customerInfoDao.findByTelCode(TelCode);
-    }
+//    // 根据tele获取用户信息
+//    @Override
+//    public List<CustomerInfo> getCustomerListByTelCode(String TelCode) {
+////		List<CustomerInfo> listci = customerInfoDao.findByTelCode(TelCode);
+////		List<CodeNamePair> listCN = new ArrayList<CodeNamePair>();
+////		for(CustomerInfo ci : listci){
+////			CodeNamePair cn = new CodeNamePair(String.valueOf(ci.getID()),ci.getName());
+////			listCN.add(cn);
+////		}
+////		return listCN;
+//        return customerInfoDao.findByTelCode(TelCode);
+//    }
 
     // 根据id获取用户信息
     @Override
@@ -183,6 +183,7 @@ public class MiscService implements IMiscService {
 
     }
 
+    // gqb
     @Override
     public Response doLogin(int uid, String pwd) {
         UserInfo userInfo = userInfoDao.get(uid);
@@ -198,6 +199,15 @@ public class MiscService implements IMiscService {
     public void doLogOut(int uid) {
         // TODO Auto-generated method stub
 
+    }
+
+    // gqb
+    @Override
+    public Response register(UserInfo userInfo) {
+        userInfo.setURull(0);
+        userInfoDao.save(userInfo);
+        int UID = userInfoDao.findByLimit(userInfo).getUID();
+        return Response.ok(UID).header("EntityClass", "register").build();
     }
 
     @Override
