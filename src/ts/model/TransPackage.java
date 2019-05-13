@@ -54,9 +54,9 @@ public class TransPackage implements Serializable {
 	@org.hibernate.annotations.LazyCollection(org.hibernate.annotations.LazyCollectionOption.TRUE)	
 	private java.util.Set<PackageRoute> route = new java.util.HashSet<PackageRoute>();
 	
-	@OneToOne(mappedBy="pkg", targetEntity=UsersPackage.class, fetch=FetchType.LAZY)	
+	@OneToMany(mappedBy="pkg", targetEntity=UsersPackage.class, fetch=FetchType.LAZY)	
 	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.LOCK})	
-	private UsersPackage user;
+	private java.util.Set<UsersPackage> user = new java.util.HashSet<UsersPackage>();
 	
 	@OneToMany(mappedBy="pkg", targetEntity=TransPackageContent.class)	
 	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.LOCK})	
@@ -121,11 +121,11 @@ public class TransPackage implements Serializable {
 	}
 	
 	
-	public void setUser(UsersPackage value) {
+	public void setUser(java.util.Set<UsersPackage> value) {
 		this.user = value;
 	}
 	
-	public UsersPackage getUser() {
+	public java.util.Set<UsersPackage> getUser() {
 		return user;
 	}
 	
@@ -164,10 +164,7 @@ public class TransPackage implements Serializable {
 			sb.append("CreateTime=").append(getCreateTime()).append(" ");
 			sb.append("Status=").append(getStatus()).append(" ");
 			sb.append("Route.size=").append(getRoute().size()).append(" ");
-			if (getUser() != null)
-				sb.append("User.Persist_ID=").append(getUser().toString(true)).append(" ");
-			else
-				sb.append("User=null ");
+			sb.append("User.size=").append(getUser().size()).append(" ");
 			sb.append("Content.size=").append(getContent().size()).append(" ");
 			sb.append("History.size=").append(getHistory().size()).append(" ");
 			sb.append("]");

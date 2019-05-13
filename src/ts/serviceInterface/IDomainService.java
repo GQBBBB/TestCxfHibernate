@@ -110,8 +110,8 @@ public interface IDomainService {
     // 快递员揽收包裹访问接口=======================================================================
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Path("/getReceivePackageID/{UID}")
-    public Response getReceivePackageID(@PathParam("UID") String UID);
+    @Path("/getReceivePackageID/{UID}/{URull}")
+    public Response getReceivePackageID(@PathParam("UID") String UID, @PathParam("URull") int URull);
 
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
