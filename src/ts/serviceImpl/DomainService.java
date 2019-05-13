@@ -286,11 +286,19 @@ public class DomainService implements IDomainService {
     // gqb快件从包裹中移除
     @Override
     public Response MoveExpressFromPackage(String expressSheetID, String sourcePkgId) {
-        int expressSheetStatus = expressSheetDao.get(expressSheetID).getStatus();
+        ExpressSheet expressSheet = expressSheetDao.get(expressSheetID);
+        int expressSheetStatus = expressSheet.getStatus();
+        
         // 当包裹为新建，分拣，交付状态时
-        if (expressSheetStatus == 0 || expressSheetStatus == 2 || expressSheetStatus == 5) {
+        if (expressSheetStatus == 0 || expressSheetStatus == 5) {
             return Response.ok("该快件无法从包裹中移出").header("EntityClass", "U_ExpressSheet").build();
         }
+        if (expressSheetStatus == 2) {
+            return Response.ok("该快件已经从包裹中移出").header("EntityClass", "U_ExpressSheet").build();
+        }
+        
+        expressSheet.setStatus(ExpressSheet.STATUS.STATUS_SORTING);
+        expressSheetDao.update(expressSheet);
 
         TransPackageContent transPackageContent = transPackageContentDao.get(expressSheetID, sourcePkgId);
         //更改包裹内容为移出包裹状态
