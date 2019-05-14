@@ -140,6 +140,14 @@ public interface IDomainService {
     @Path("/MoveExpressFromPackage/{expressSheetID}/{sourcePkgId}")
     public Response MoveExpressFromPackage(@PathParam("expressSheetID") String expressSheetID,
             @PathParam("sourcePkgId") String sourcePkgId);
+    
+    // 快件移入包裹
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/MoveExpressIntoPackage/{expressSheetID}/{targetPkgId}")
+    public Response MoveExpressIntoPackage(@PathParam("expressSheetID") String expressSheetID,
+            @PathParam("targetPkgId") String targetPkgId);
 
     // 快递员信息接口=======================================================================
     @POST

@@ -279,19 +279,24 @@ public class DomainService implements IDomainService {
         return null;
     }
 
-    // 快件移入包裹
-    public boolean MoveExpressIntoPackage(String id, String targetPkgId) {
+    // gqb快件移入包裹
+    public Response MoveExpressIntoPackage(String id, String targetPkgId) {
         TransPackage targetPkg = transPackageDao.get(targetPkgId);
-        if ((targetPkg.getStatus() > 0) && (targetPkg.getStatus() < 5)) { // 包裹的状态快点定义,打开的包裹或者货篮才能操作==================================================================
-            return false;
+        ExpressSheet expressSheet = expressSheetDao.get(id);
+        if (expressSheet.getStatus() == ExpressSheet.STATUS.STATUS_SORTING) {
+            //快件打进包裹后需要设为转运状态
+            expressSheet.setStatus(ExpressSheet.STATUS.STATUS_TRANSPORT);
+            expressSheetDao.update(expressSheet);
+            
+            TransPackageContent pkg_add = new TransPackageContent();
+            pkg_add.setPkg(targetPkg);
+            pkg_add.setExpress(expressSheet);
+            pkg_add.setStatus(TransPackageContent.STATUS.STATUS_ACTIVE);
+            transPackageContentDao.save(pkg_add);
+            return Response.ok("该快件已打包").header("EntityClass", "P_ExpressSheet").build();
+        }else {
+            return Response.ok("该快件无法打包").header("EntityClass", "P_ExpressSheet").build();
         }
-
-        TransPackageContent pkg_add = new TransPackageContent();
-        pkg_add.setPkg(targetPkg);
-        pkg_add.setExpress(expressSheetDao.get(id));
-        pkg_add.setStatus(TransPackageContent.STATUS.STATUS_ACTIVE);
-        transPackageContentDao.save(pkg_add);
-        return true;
     }
 
     // gqb快件从包裹中移除
@@ -398,10 +403,11 @@ public class DomainService implements IDomainService {
         }
     }
 
-    // gqb保存包裹
+    // gqb打包保存包裹
     @Override
     public Response saveTransPackage(TransPackage obj) {
         try {
+            obj.setStatus(TransPackage.STATUS.STATUS_PACK);
             transPackageDao.update(obj);
             return Response.ok(obj).header("EntityClass", "R_TransPackage").build();
         } catch (Exception e) {
@@ -445,7 +451,7 @@ public class DomainService implements IDomainService {
             transPackage.setStatus(TransPackage.STATUS.STATUS_COLLECT);
         } else if (URull == UserInfo.URull.URull_PACKING) {
             // 设置包裹为打包状态
-            transPackage.setStatus(TransPackage.STATUS.STATUS_PACK);
+            transPackage.setStatus(TransPackage.STATUS.STATUS_CREATED);
         }
         transPackage.setCreateTime(getCurrentDate());
         transPackageDao.save(transPackage);
