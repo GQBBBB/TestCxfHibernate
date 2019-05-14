@@ -7,4 +7,5 @@ public class TransPackageDao extends BaseDao<TransPackage,String> {
 	public TransPackageDao(){
 		super(TransPackage.class);
 	}
+
 }

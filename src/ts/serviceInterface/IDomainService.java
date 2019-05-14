@@ -66,7 +66,7 @@ public interface IDomainService {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/deliveryExpressSheetId/id/{id}/uid/{uid}")
     public Response DeliveryExpressSheetId(@PathParam("id") String id, @PathParam("uid") int uid);
-    
+
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -145,13 +145,20 @@ public interface IDomainService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Path("/changeUserInfo") 
+    @Path("/changeUserInfo")
     public Response changeUserInfo(UserInfo userInfo);
-    
+
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Path("/getUserInfoList") 
+    @Path("/getUserInfoList")
     public List<UserInfo> getUserInfoList();
+
+    // 运输员获得根据ID获得转运包裹对象
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/getTransportPackage/{UID}/{PackageId}")
+    public Response getTransportPackage(@PathParam("UID") int UID, @PathParam("PackageId") String PackageId);
 
 }

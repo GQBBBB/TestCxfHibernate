@@ -20,6 +20,7 @@ import ts.daoImpl.CustomerInfoDao;
 import ts.daoImpl.ExpressSheetDao;
 import ts.daoImpl.PackageRouteDao;
 import ts.daoImpl.TransHistoryDao;
+import ts.daoImpl.TransNodeDao;
 import ts.daoImpl.TransPackageContentDao;
 import ts.daoImpl.TransPackageDao;
 import ts.daoImpl.UserInfoDao;
@@ -28,6 +29,7 @@ import ts.model.CustomerInfo;
 import ts.model.ExpressSheet;
 import ts.model.PackageRoute;
 import ts.model.TransHistory;
+import ts.model.TransNode;
 import ts.model.TransPackage;
 import ts.model.TransPackageContent;
 import ts.model.UserInfo;
@@ -44,6 +46,15 @@ public class DomainService implements IDomainService {
     private UserInfoDao userInfoDao;
     private UsersPackageDao usersPackageDao;
     private CustomerInfoDao customerInfoDao;
+    private TransNodeDao transNodeDao;
+    
+    public TransNodeDao getTransNodeDao() {
+        return transNodeDao;
+    }
+
+    public void setTransNodeDao(TransNodeDao dao) {
+        this.transNodeDao = dao;
+    }
 
     public CustomerInfoDao getCustomerInfoDao() {
         return customerInfoDao;
@@ -443,7 +454,11 @@ public class DomainService implements IDomainService {
         usersPackage.setUserU(userInfoDao.get(Integer.parseInt(UID)));
         usersPackage.setPkg(transPackage);
         usersPackageDao.save(usersPackage);
-
+        if (URull == UserInfo.URull.URull_PACKING) {
+            //打包返回
+            return Response.ok(transPackage).header("EntityClass", "PackingPackageID").build();
+        }
+        //默认揽收返回
         return Response.ok(receivePackageID).header("EntityClass", "ReceivePackageID").build();
     }
 
@@ -553,5 +568,45 @@ public class DomainService implements IDomainService {
             list.addAll(expressSheets);
         }
         return list;
+    }
+    
+    //gqb转运根据ID获取并更新包裹
+    public Response getTransportPackage(int UID,  String PackageId) {
+        TransPackage transPackage = transPackageDao.get(PackageId);
+        TransHistory transHistory = new TransHistory();
+        transPackage.setStatus(TransPackage.STATUS.STATUS_TRANSPORT);
+        transPackageDao.update(transPackage);
+        
+        transHistory.setActTime(getCurrentDate());
+        transHistory.setPkg(transPackage);
+        transHistory.setUIDFrom(usersPackageDao.getUIDByPackageID(PackageId));
+        transHistory.setUIDTo(UID);
+        //根据包裹中sourceNode获得节点x，y
+        TransNode transNode = transNodeDao.get(transPackage.getSourceNode());
+        transHistory.setX(transNode.getX());
+        transHistory.setY(transNode.getY());
+        transHistoryDao.save(transHistory);
+        
+        UsersPackage usersPackage = new UsersPackage();
+        usersPackage.setPkg(transPackage);
+        usersPackage.setUserU(userInfoDao.get(UID));
+        usersPackageDao.save(usersPackage);
+        
+        PackageRoute packageRoute = new PackageRoute();
+        packageRoute.setPkg(transPackage);
+        packageRoute.setTm(getCurrentDate());
+        packageRoute.setX(transNode.getX());
+        packageRoute.setY(transNode.getY());
+        packageRouteDao.save(packageRoute);
+        
+        List<TransPackageContent> transPackageContents = transPackageContentDao.getExpressSheetList(PackageId);
+        ExpressSheet expressSheet = new ExpressSheet();
+        for (TransPackageContent transPackageContent : transPackageContents) {
+            expressSheet = transPackageContent.getExpress();
+            expressSheet.setStatus(ExpressSheet.STATUS.STATUS_TRANSPORT);
+            expressSheetDao.update(expressSheet);
+        }
+        
+        return Response.ok(transPackage).header("EntityClass", "TransPackage").build();
     }
 }

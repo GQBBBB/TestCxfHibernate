@@ -18,6 +18,7 @@ import java.util.Date;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @org.hibernate.annotations.Proxy(lazy=false)
 @Table(name="TransPackage")
@@ -116,6 +117,7 @@ public class TransPackage implements Serializable {
 		this.route = value;
 	}
 	
+	@XmlTransient
 	public java.util.Set<PackageRoute> getRoute() {
 		return route;
 	}
@@ -125,6 +127,7 @@ public class TransPackage implements Serializable {
 		this.user = value;
 	}
 	
+	@XmlTransient
 	public java.util.Set<UsersPackage> getUser() {
 		return user;
 	}
@@ -133,6 +136,7 @@ public class TransPackage implements Serializable {
 		this.content = value;
 	}
 	
+	@XmlTransient
 	public java.util.Set<TransPackageContent> getContent() {
 		return content;
 	}
@@ -142,6 +146,7 @@ public class TransPackage implements Serializable {
 		this.history = value;
 	}
 	
+	@XmlTransient
 	public java.util.Set<TransHistory> getHistory() {
 		return history;
 	}

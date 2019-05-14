@@ -61,6 +61,7 @@ public class TransPackageContent implements Serializable {
 		this.pkg = value;
 	}
 	
+	@XmlTransient
 	public TransPackage getPkg() {
 		return pkg;
 	}
