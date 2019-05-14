@@ -376,7 +376,7 @@ public class DomainService implements IDomainService {
         return list;
     }
 
-    // 获得包裹
+    // gqb获得包裹
     @Override
     public Response getTransPackage(String id) {
         TransPackage es = transPackageDao.get(id);
@@ -398,11 +398,11 @@ public class DomainService implements IDomainService {
         }
     }
 
-    // 保存包裹
+    // gqb保存包裹
     @Override
     public Response saveTransPackage(TransPackage obj) {
         try {
-            transPackageDao.save(obj);
+            transPackageDao.update(obj);
             return Response.ok(obj).header("EntityClass", "R_TransPackage").build();
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
