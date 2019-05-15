@@ -222,21 +222,21 @@ public class DomainService implements IDomainService {
     // gqb保存快递单
     @Override
     public Response saveExpressSheet(ExpressSheet obj) {
+        // System.out.println("ExpressSheet---" +obj);
         try {
             String id = obj.getID();
-            if (id == null || id.length() == 0) {
-                // 生成 ExpressSheet 的ID
-                while (true) {
-                    id = String.valueOf(System.currentTimeMillis());
-                    if (expressSheetDao.get(id) == null) {
-                        obj.setID(id);
-                        break;
-                    }
-                }
+            //System.out.println("---------------");
+            while (true) {
+                id = String.valueOf(System.currentTimeMillis());
+                // if (expressSheetDao.get(id) == null) {
+                obj.setID(id);
+                break;
+                // }
             }
 
+            //System.out.println("ExpressSheet---" + obj);
             if (obj.getStatus() != ExpressSheet.STATUS.STATUS_CREATED) {
-                return Response.ok("快件运单已付运!无法保存更改!").header("EntityClass", "E_ExpressSheet").build();
+                return Response.ok("ok!").header("EntityClass", "E_ExpressSheet").build();
             }
             expressSheetDao.save(obj);
             return Response.ok(obj).header("EntityClass", "R_ExpressSheet").build();
@@ -618,12 +618,12 @@ public class DomainService implements IDomainService {
         return Response.ok(transPackage).header("EntityClass", "TransPackage").build();
     }
 
-    //获得转运包裹
+    // 获得转运包裹
     public HashSet<TransPackage> getTransPackageList(int UID) {
         HashSet<TransPackage> set = new HashSet<TransPackage>();
         List<UsersPackage> usersPackages = usersPackageDao.getPackageByUID(UID);
         for (UsersPackage usersPackage : usersPackages) {
-            if(usersPackage.getPkg().getStatus() == TransPackage.STATUS.STATUS_TRANSPORT) {
+            if (usersPackage.getPkg().getStatus() == TransPackage.STATUS.STATUS_TRANSPORT) {
                 set.add(usersPackage.getPkg());
             }
         }
