@@ -24,4 +24,9 @@ public class UsersPackageDao extends BaseDao<UsersPackage, Integer> {
         return uid;
     }
 
+    public List<UsersPackage> getPackageByUID(int UID) {
+        String sql = "UserUID = " + UID;
+        return findBy("SN", true, Restrictions.sqlRestriction(sql));
+    }
+
 }

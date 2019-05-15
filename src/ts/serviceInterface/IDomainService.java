@@ -168,5 +168,11 @@ public interface IDomainService {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/getTransportPackage/{UID}/{PackageId}")
     public Response getTransportPackage(@PathParam("UID") int UID, @PathParam("PackageId") String PackageId);
+    
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/getTransPackageList/{UID}")
+    public HashSet<TransPackage> getTransPackageList(@PathParam("UID") int UID);
 
 }

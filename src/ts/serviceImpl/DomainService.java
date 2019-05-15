@@ -168,7 +168,7 @@ public class DomainService implements IDomainService {
 //		return list;
 //	}
 
-    // 获得包裹中的所有快递单
+    // gqb获得包裹中的所有快递单
     @Override
     public List<ExpressSheet> getExpressListInPackage(String packageId) {
         List<ExpressSheet> list = new ArrayList<ExpressSheet>();
@@ -616,5 +616,17 @@ public class DomainService implements IDomainService {
 //        }
 
         return Response.ok(transPackage).header("EntityClass", "TransPackage").build();
+    }
+
+    //获得转运包裹
+    public HashSet<TransPackage> getTransPackageList(int UID) {
+        HashSet<TransPackage> set = new HashSet<TransPackage>();
+        List<UsersPackage> usersPackages = usersPackageDao.getPackageByUID(UID);
+        for (UsersPackage usersPackage : usersPackages) {
+            if(usersPackage.getPkg().getStatus() == TransPackage.STATUS.STATUS_TRANSPORT) {
+                set.add(usersPackage.getPkg());
+            }
+        }
+        return set;
     }
 }
