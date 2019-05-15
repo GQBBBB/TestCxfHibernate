@@ -318,13 +318,14 @@ public class DomainService implements IDomainService {
             return Response.ok("该快件已经从包裹中移出").header("EntityClass", "U_ExpressSheet").build();
         }
 
-        expressSheet.setStatus(ExpressSheet.STATUS.STATUS_SORTING);
-        expressSheetDao.update(expressSheet);
-
         TransPackageContent transPackageContent = transPackageContentDao.get(expressSheetID, sourcePkgId);
         if (transPackageContent == null) {
             return Response.ok("快件不在此包裹中").header("EntityClass", "U_ExpressSheet").build();
         }
+        
+        expressSheet.setStatus(ExpressSheet.STATUS.STATUS_SORTING);
+        expressSheetDao.update(expressSheet);
+
         // 更改包裹内容为移出包裹状态
         transPackageContent.setStatus(TransPackageContent.STATUS.STATUS_OUTOF_PACKAGE);
         transPackageContentDao.update(transPackageContent);
