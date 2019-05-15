@@ -174,5 +174,11 @@ public interface IDomainService {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/getTransPackageList/{UID}")
     public HashSet<TransPackage> getTransPackageList(@PathParam("UID") int UID);
+    
+    // 快递员派送包裹访问接口=======================================================================
+    @GET
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/getDeliverPackageID/{UID}/{PackageId}")
+    public Response getDeliverPackageID(@PathParam("UID") int UID, @PathParam("PackageId") String PackageId);
 
 }

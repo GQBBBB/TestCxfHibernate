@@ -17,10 +17,8 @@ public class UsersPackageDao extends BaseDao<UsersPackage, Integer> {
         String sql = "PackageID = '" + id + "'";
         List<UsersPackage> list = findBy("SN", true, Restrictions.sqlRestriction(sql));
         int uid = 0;
-        for(int i = 0; i < list.size(); i++) {   
-            UsersPackage uPackage = list.get(i);   
-            uid = uPackage.getUserU().getUID();
-        } 
+        UsersPackage uPackage = list.get(list.size() - 1);
+        uid = uPackage.getUserU().getUID();
         return uid;
     }
 

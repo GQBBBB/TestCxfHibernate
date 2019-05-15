@@ -36,9 +36,9 @@ public class UserInfoDao extends BaseDao<UserInfo, Integer> {
     }
 
     public UserInfo findByLimit(UserInfo userInfo) {
-        String sql = "PWD = " + userInfo.getPWD() + "+ Name =" + userInfo.getName() + "+ TelCode =" + userInfo.getTelCode() + "+ DptID =" + userInfo.getDptID();
+        String sql = "PWD = '" + userInfo.getPWD() + "' and Name = '" + userInfo.getName() + "' and TelCode = '" + userInfo.getTelCode() + "'";
         List<UserInfo> list = new ArrayList<UserInfo>();
-        list = findBy("UID", true, Restrictions.sqlRestriction(sql));
-        return list.get(0);
+        list = findBy("UID", true, Restrictions.sqlRestriction(sql));//System.out.print(list);
+        return list.get(list.size() - 1);
     }
 }

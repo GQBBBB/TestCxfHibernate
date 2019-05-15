@@ -225,7 +225,7 @@ public class DomainService implements IDomainService {
         // System.out.println("ExpressSheet---" +obj);
         try {
             String id = obj.getID();
-            //System.out.println("---------------");
+            // System.out.println("---------------");
             while (true) {
                 id = String.valueOf(System.currentTimeMillis());
                 // if (expressSheetDao.get(id) == null) {
@@ -234,7 +234,7 @@ public class DomainService implements IDomainService {
                 // }
             }
 
-            //System.out.println("ExpressSheet---" + obj);
+            // System.out.println("ExpressSheet---" + obj);
             if (obj.getStatus() != ExpressSheet.STATUS.STATUS_CREATED) {
                 return Response.ok("ok!").header("EntityClass", "E_ExpressSheet").build();
             }
@@ -581,6 +581,12 @@ public class DomainService implements IDomainService {
     // gqb转运根据ID获取并更新包裹
     public Response getTransportPackage(int UID, String PackageId) {
         TransPackage transPackage = transPackageDao.get(PackageId);
+        if (transPackage == null) {
+            return Response.ok("包裹不存在").header("EntityClass", "TransPackage").build();
+        }
+        if (transPackage.getStatus() != TransPackage.STATUS.STATUS_PACK) {
+            return Response.ok("包裹状态错误").header("EntityClass", "TransPackage").build();
+        }
         TransHistory transHistory = new TransHistory();
         transPackage.setStatus(TransPackage.STATUS.STATUS_TRANSPORT);
         transPackageDao.update(transPackage);
@@ -618,7 +624,8 @@ public class DomainService implements IDomainService {
         return Response.ok(transPackage).header("EntityClass", "TransPackage").build();
     }
 
-    // 获得转运包裹
+    // gqb 获得转运包裹
+    @Override
     public HashSet<TransPackage> getTransPackageList(int UID) {
         HashSet<TransPackage> set = new HashSet<TransPackage>();
         List<UsersPackage> usersPackages = usersPackageDao.getPackageByUID(UID);
@@ -628,5 +635,57 @@ public class DomainService implements IDomainService {
             }
         }
         return set;
+    }
+
+    // gqb 获得派送包裹
+    @Override
+    public Response getDeliverPackageID(int UID, String PackageId) {
+        TransPackage transPackage = transPackageDao.get(PackageId);
+        if (transPackage == null) {
+            return Response.ok("包裹不存在").header("EntityClass", "DeliverPackage").build();
+        }
+        if (transPackage.getStatus() != TransPackage.STATUS.STATUS_PACK) {
+            return Response.ok("包裹状态错误").header("EntityClass", "DeliverPackage").build();
+        }
+        transPackage.setStatus(TransPackage.STATUS.STATUS_DELIVERY);
+        transPackageDao.update(transPackage);
+        
+        UserInfo userInfo = userInfoDao.get(UID);
+        userInfo.setDelivePackageID(PackageId);
+        userInfo.setURull(UserInfo.URull.URull_DELIVERY);
+        userInfoDao.update(userInfo);
+        
+        TransHistory transHistory = new TransHistory();
+        transHistory.setActTime(getCurrentDate());
+        transHistory.setPkg(transPackage);
+        transHistory.setUIDFrom(usersPackageDao.getUIDByPackageID(PackageId));
+        transHistory.setUIDTo(UID);
+        // 根据包裹中sourceNode获得节点x，y
+        TransNode transNode = transNodeDao.get(transPackage.getSourceNode());
+        transHistory.setX(transNode.getX());
+        transHistory.setY(transNode.getY());
+        transHistoryDao.save(transHistory);
+
+        UsersPackage usersPackage = new UsersPackage();
+        usersPackage.setPkg(transPackage);
+        usersPackage.setUserU(userInfoDao.get(UID));
+        usersPackageDao.save(usersPackage);
+
+        PackageRoute packageRoute = new PackageRoute();
+        packageRoute.setPkg(transPackage);
+        packageRoute.setTm(getCurrentDate());
+        packageRoute.setX(transNode.getX());
+        packageRoute.setY(transNode.getY());
+        packageRouteDao.save(packageRoute);
+
+        List<TransPackageContent> transPackageContents = transPackageContentDao.getExpressSheetList(PackageId);
+        ExpressSheet expressSheet = new ExpressSheet();
+        for (TransPackageContent transPackageContent : transPackageContents) {
+            expressSheet = transPackageContent.getExpress();
+            System.out.println(expressSheet);
+            expressSheet.setStatus(ExpressSheet.STATUS.STATUS_DELIVERY);
+            expressSheetDao.update(expressSheet);
+        }
+        return Response.ok(transPackage).header("EntityClass", "DeliverPackage").build();
     }
 }

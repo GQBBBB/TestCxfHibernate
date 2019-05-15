@@ -204,7 +204,6 @@ public class MiscService implements IMiscService {
     // gqb
     @Override
     public Response register(UserInfo userInfo) {
-        userInfo.setURull(0);
         userInfoDao.save(userInfo);
         int UID = userInfoDao.findByLimit(userInfo).getUID();
         return Response.ok(UID).header("EntityClass", "register").build();
