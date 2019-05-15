@@ -176,7 +176,7 @@ public class DomainService implements IDomainService {
         return list;
     }
 
-    // 获得快递单
+    // gqb获得快递单
     @Override
     public Response getExpressSheet(String id) {
         ExpressSheet es = expressSheetDao.get(id);
@@ -688,5 +688,12 @@ public class DomainService implements IDomainService {
             expressSheetDao.update(expressSheet);
         }
         return Response.ok(transPackage).header("EntityClass", "DeliverPackage").build();
+    }
+    
+    //gqb 验收
+    public Response acceptExpressSheet(ExpressSheet expressSheet) {
+        expressSheet.setStatus(ExpressSheet.STATUS.STATUS_PAY);
+        expressSheetDao.update(expressSheet);
+        return Response.ok("验收成功").header("EntityClass", "acceptExpressSheet").build();
     }
 }

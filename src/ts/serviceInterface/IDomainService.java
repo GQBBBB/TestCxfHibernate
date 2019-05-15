@@ -180,5 +180,11 @@ public interface IDomainService {
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/getDeliverPackageID/{UID}/{PackageId}")
     public Response getDeliverPackageID(@PathParam("UID") int UID, @PathParam("PackageId") String PackageId);
+    
+     // 验收包裹访问接口=======================================================================
+    @POST
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Path("/acceptPackage")
+    public Response acceptExpressSheet(ExpressSheet expressSheet);
 
 }
