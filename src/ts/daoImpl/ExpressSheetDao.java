@@ -22,17 +22,6 @@ public class ExpressSheetDao extends BaseDao<ExpressSheet,String> {
 		super(ExpressSheet.class);
 	}
 
-	//重写的get方法,将客户的区域字符串加入
-	public ExpressSheet get(String id) {
-		ExpressSheet es = super.get(id);
-		CustomerInfo ci = es.getRecever();
-		if(ci!= null)
-			ci.setRegionString(regionDao.getRegionNameByID(ci.getRegionCode()));	//获取区域的名字字符串
-		CustomerInfo cs = es.getSender();
-		if(cs != null) 
-			cs.setRegionString(regionDao.getRegionNameByID(cs.getRegionCode()));	//获取区域的名字字符串
-		return es;
-	}
 
 	//获得指定包裹ID的所有快件列表
 	public List<ExpressSheet> getListInPackage(String pkg_id) {
