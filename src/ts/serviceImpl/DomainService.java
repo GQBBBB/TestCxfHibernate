@@ -47,7 +47,7 @@ public class DomainService implements IDomainService {
     private UsersPackageDao usersPackageDao;
     private CustomerInfoDao customerInfoDao;
     private TransNodeDao transNodeDao;
-    
+
     public TransNodeDao getTransNodeDao() {
         return transNodeDao;
     }
@@ -284,17 +284,17 @@ public class DomainService implements IDomainService {
         TransPackage targetPkg = transPackageDao.get(targetPkgId);
         ExpressSheet expressSheet = expressSheetDao.get(id);
         if (expressSheet.getStatus() == ExpressSheet.STATUS.STATUS_SORTING) {
-            //快件打进包裹后需要设为转运状态
+            // 快件打进包裹后需要设为转运状态
             expressSheet.setStatus(ExpressSheet.STATUS.STATUS_TRANSPORT);
             expressSheetDao.update(expressSheet);
-            
+
             TransPackageContent pkg_add = new TransPackageContent();
             pkg_add.setPkg(targetPkg);
             pkg_add.setExpress(expressSheet);
             pkg_add.setStatus(TransPackageContent.STATUS.STATUS_ACTIVE);
             transPackageContentDao.save(pkg_add);
             return Response.ok("该快件已打包").header("EntityClass", "P_ExpressSheet").build();
-        }else {
+        } else {
             return Response.ok("该快件无法打包").header("EntityClass", "P_ExpressSheet").build();
         }
     }
@@ -308,11 +308,13 @@ public class DomainService implements IDomainService {
         }
         int expressSheetStatus = expressSheet.getStatus();
 
-        // 当包裹为新建，分拣，交付状态时
-        if (expressSheetStatus == 0 || expressSheetStatus == 5) {
+        // 当包裹为新建，交付状态时
+        if (expressSheetStatus == ExpressSheet.STATUS.STATUS_CREATED
+                || expressSheetStatus == ExpressSheet.STATUS.STATUS_PAY) {
             return Response.ok("该快件无法从包裹中移出").header("EntityClass", "U_ExpressSheet").build();
         }
-        if (expressSheetStatus == 2) {
+        // 当包裹为分拣状态时
+        if (expressSheetStatus == ExpressSheet.STATUS.STATUS_SORTING) {
             return Response.ok("该快件已经从包裹中移出").header("EntityClass", "U_ExpressSheet").build();
         }
 
@@ -461,10 +463,10 @@ public class DomainService implements IDomainService {
         usersPackage.setPkg(transPackage);
         usersPackageDao.save(usersPackage);
         if (URull == UserInfo.URull.URull_PACKING) {
-            //打包返回
+            // 打包返回
             return Response.ok(transPackage).header("EntityClass", "PackingPackageID").build();
         }
-        //默认揽收返回
+        // 默认揽收返回
         return Response.ok(receivePackageID).header("EntityClass", "ReceivePackageID").build();
     }
 
@@ -575,44 +577,44 @@ public class DomainService implements IDomainService {
         }
         return list;
     }
-    
-    //gqb转运根据ID获取并更新包裹
-    public Response getTransportPackage(int UID,  String PackageId) {
+
+    // gqb转运根据ID获取并更新包裹
+    public Response getTransportPackage(int UID, String PackageId) {
         TransPackage transPackage = transPackageDao.get(PackageId);
         TransHistory transHistory = new TransHistory();
         transPackage.setStatus(TransPackage.STATUS.STATUS_TRANSPORT);
         transPackageDao.update(transPackage);
-        
+
         transHistory.setActTime(getCurrentDate());
         transHistory.setPkg(transPackage);
         transHistory.setUIDFrom(usersPackageDao.getUIDByPackageID(PackageId));
         transHistory.setUIDTo(UID);
-        //根据包裹中sourceNode获得节点x，y
+        // 根据包裹中sourceNode获得节点x，y
         TransNode transNode = transNodeDao.get(transPackage.getSourceNode());
         transHistory.setX(transNode.getX());
         transHistory.setY(transNode.getY());
         transHistoryDao.save(transHistory);
-        
+
         UsersPackage usersPackage = new UsersPackage();
         usersPackage.setPkg(transPackage);
         usersPackage.setUserU(userInfoDao.get(UID));
         usersPackageDao.save(usersPackage);
-        
+
         PackageRoute packageRoute = new PackageRoute();
         packageRoute.setPkg(transPackage);
         packageRoute.setTm(getCurrentDate());
         packageRoute.setX(transNode.getX());
         packageRoute.setY(transNode.getY());
         packageRouteDao.save(packageRoute);
-        
-        List<TransPackageContent> transPackageContents = transPackageContentDao.getExpressSheetList(PackageId);
-        ExpressSheet expressSheet = new ExpressSheet();
-        for (TransPackageContent transPackageContent : transPackageContents) {
-            expressSheet = transPackageContent.getExpress();
-            expressSheet.setStatus(ExpressSheet.STATUS.STATUS_TRANSPORT);
-            expressSheetDao.update(expressSheet);
-        }
-        
+
+//        List<TransPackageContent> transPackageContents = transPackageContentDao.getExpressSheetList(PackageId);
+//        ExpressSheet expressSheet = new ExpressSheet();
+//        for (TransPackageContent transPackageContent : transPackageContents) {
+//            expressSheet = transPackageContent.getExpress();
+//            expressSheet.setStatus(ExpressSheet.STATUS.STATUS_TRANSPORT);
+//            expressSheetDao.update(expressSheet);
+//        }
+
         return Response.ok(transPackage).header("EntityClass", "TransPackage").build();
     }
 }
