@@ -184,7 +184,7 @@ public interface IDomainService {
      // 验收包裹访问接口=======================================================================
     @POST
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @Path("/acceptPackage")
-    public Response acceptExpressSheet(ExpressSheet expressSheet);
+    @Path("/acceptPackage/{UID}")
+    public Response acceptExpressSheet(ExpressSheet expressSheet, @PathParam("UID") String UID);
 
 }

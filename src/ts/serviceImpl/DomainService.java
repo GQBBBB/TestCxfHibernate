@@ -691,8 +691,10 @@ public class DomainService implements IDomainService {
     }
     
     //gqb 验收
-    public Response acceptExpressSheet(ExpressSheet expressSheet) {
+    public Response acceptExpressSheet(ExpressSheet expressSheet, String UID) {
         expressSheet.setStatus(ExpressSheet.STATUS.STATUS_PAY);
+        expressSheet.setDeliver(UID);
+        expressSheet.setDeliveTime(getCurrentDate());
         expressSheetDao.update(expressSheet);
         return Response.ok("验收成功").header("EntityClass", "acceptExpressSheet").build();
     }
