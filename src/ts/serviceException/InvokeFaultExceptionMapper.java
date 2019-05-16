@@ -20,13 +20,13 @@ public class InvokeFaultExceptionMapper implements ExceptionMapper {
            ResponseBuilder rb = Response.status(Response.Status.INTERNAL_SERVER_ERROR);  
            rb.type("application/json;charset=UTF-8");  
            
-           if (ex instanceof HibernateObjectRetrievalFailureException) {//×Ô¶¨ÒåµÄÒì³£Àà  
+           if (ex instanceof HibernateObjectRetrievalFailureException) {//è‡ªå®šä¹‰çš„å¼‚å¸¸ç±»  
         	   HibernateObjectRetrievalFailureException e = (HibernateObjectRetrievalFailureException) ex;  
 //        	   rb = Response.status(Response.Status.NOT_FOUND);  
 //               rb.type("application/json;charset=UTF-8");
-        	   //ÕâÀïĞèÒªĞ´µÄ¸´ÔÓÒ»µã,°ÑÓ¢ÎÄµÄ´íÎó×ªÒå
+        	   //è¿™é‡Œéœ€è¦å†™çš„å¤æ‚ä¸€ç‚¹,æŠŠè‹±æ–‡çš„é”™è¯¯è½¬ä¹‰
                rb.entity(e.getLocalizedMessage());  
-           }else if (ex instanceof ServiceException) {//×Ô¶¨ÒåµÄÒì³£Àà  
+           }else if (ex instanceof ServiceException) {//è‡ªå®šä¹‰çš„å¼‚å¸¸ç±»  
                ServiceException e = (ServiceException) ex;  
                rb.entity(e.getMessage());  
            }else{  

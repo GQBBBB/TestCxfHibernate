@@ -17,7 +17,7 @@ import ts.model.UserInfo;
 import ts.serviceInterface.IMiscService;
 
 public class MiscService implements IMiscService {
-    // TransNodeCatalog nodes; //×Ô¼º×öµÄ»º´æºÍÖØ¶¨ÏòÏÈ²»ÒªÁË,ÓÃHibernate»º´æ¶Ô¸¶Ò»ÏÂ£¬ÒÔºó¼ÓÉÏÈ¥
+    // TransNodeCatalog nodes; //è‡ªå·±åšçš„ç¼“å­˜å’Œé‡å®šå‘å…ˆä¸è¦äº†,ç”¨Hibernateç¼“å­˜å¯¹ä»˜ä¸€ä¸‹ï¼Œä»¥ååŠ ä¸Šå»
     // RegionCatalog regions;
     private TransNodeDao transNodeDao;
     private RegionDao regionDao;
@@ -75,7 +75,7 @@ public class MiscService implements IMiscService {
         return null;
     }
 
-    // ¸ù¾İÃû³Æ»ñÈ¡ÓÃ»§ĞÅÏ¢
+    // æ ¹æ®åç§°è·å–ç”¨æˆ·ä¿¡æ¯
     @Override
     public List<CustomerInfo> getCustomerListByName(String name) {
 //		List<CustomerInfo> listci = customerInfoDao.findByName(name);
@@ -88,7 +88,7 @@ public class MiscService implements IMiscService {
         return customerInfoDao.findByName(name);
     }
 
-//    // ¸ù¾İtele»ñÈ¡ÓÃ»§ĞÅÏ¢
+//    // æ ¹æ®teleè·å–ç”¨æˆ·ä¿¡æ¯
 //    @Override
 //    public List<CustomerInfo> getCustomerListByTelCode(String TelCode) {
 ////		List<CustomerInfo> listci = customerInfoDao.findByTelCode(TelCode);
@@ -101,24 +101,24 @@ public class MiscService implements IMiscService {
 //        return customerInfoDao.findByTelCode(TelCode);
 //    }
 
-    // ¸ù¾İid»ñÈ¡ÓÃ»§ĞÅÏ¢
+    // æ ¹æ®idè·å–ç”¨æˆ·ä¿¡æ¯
     @Override
     public Response getCustomerInfo(String id) {
         CustomerInfo cstm = customerInfoDao.get(Integer.parseInt(id));
 //		try{
-//			cstm.setRegionString(regionDao.getRegionNameByID(cstm.getRegionCode()));	//Õâ²¿·Ö¹¦ÄÜ·Åµ½DAOÀïÈ¥ÁË
+//			cstm.setRegionString(regionDao.getRegionNameByID(cstm.getRegionCode()));	//è¿™éƒ¨åˆ†åŠŸèƒ½æ”¾åˆ°DAOé‡Œå»äº†
 //		}catch(Exception e){}
         return Response.ok(cstm).header("EntityClass", "CustomerInfo").build();
     }
 
-    // ¸ù¾İidÉ¾³ıÓÃ»§
+    // æ ¹æ®idåˆ é™¤ç”¨æˆ·
     @Override
     public Response deleteCustomerInfo(int id) {
         customerInfoDao.removeById(id);
         return Response.ok("Deleted").header("EntityClass", "D_CustomerInfo").build();
     }
 
-    // ¸ù¾İÌí¼ÓÓÃ»§
+    // æ ¹æ®æ·»åŠ ç”¨æˆ·
     @Override
     public Response saveCustomerInfo(CustomerInfo obj) {
         try {
@@ -129,7 +129,7 @@ public class MiscService implements IMiscService {
         }
     }
 
-    // »ñÈ¡Ê¡ÁĞ±í
+    // è·å–çœåˆ—è¡¨
     @Override
     public List<CodeNamePair> getProvinceList() {
         List<Region> listrg = regionDao.getProvinceList();
@@ -141,7 +141,7 @@ public class MiscService implements IMiscService {
         return listCN;
     }
 
-    // »ñÈ¡ÊĞÁĞ±í
+    // è·å–å¸‚åˆ—è¡¨
     @Override
     public List<CodeNamePair> getCityList(String prv) {
         List<Region> listrg = regionDao.getCityList(prv);
@@ -153,7 +153,7 @@ public class MiscService implements IMiscService {
         return listCN;
     }
 
-    // »ñÈ¡ÏØÁĞ±í
+    // è·å–å¿åˆ—è¡¨
     @Override
     public List<CodeNamePair> getTownList(String city) {
         List<Region> listrg = regionDao.getTownList(city);
@@ -165,13 +165,13 @@ public class MiscService implements IMiscService {
         return listCN;
     }
 
-    // ÒÔ×Ö·û´®ĞÎÊ½»ñÈ¡regionµÄÈ«ÏŞ¶¨ÃûĞÅÏ¢ ÂÒÂë
+    // ä»¥å­—ç¬¦ä¸²å½¢å¼è·å–regionçš„å…¨é™å®šåä¿¡æ¯ ä¹±ç 
     @Override
     public String getRegionString(String code) {
         return regionDao.getRegionNameByID(code);
     }
 
-    // »ñÈ¡Region£¬°üº¬regionµÄÈ«ÏŞ¶¨ÃûĞÅÏ¢
+    // è·å–Regionï¼ŒåŒ…å«regionçš„å…¨é™å®šåä¿¡æ¯
     @Override
     public Region getRegion(String code) {
         return regionDao.getFullNameRegionByID(code);

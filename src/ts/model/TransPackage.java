@@ -178,12 +178,12 @@ public class TransPackage implements Serializable {
 	}
 	
 	public static final class STATUS{
-//	    0,ĞÂ½¨ Create
-//	    1,´ò°ü pack
-//	    2,×ªÔË transport
-//	    3,·Ö¼ğ Sorting
-//	    4,À¿ÊÕ Collect
-//	    5,ÅÉËÍ Delivery
+//	    0,æ–°å»º Create
+//	    1,æ‰“åŒ… pack
+//	    2,è½¬è¿ transport
+//	    3,åˆ†æ‹£ Sorting
+//	    4,æ½æ”¶ Collect
+//	    5,æ´¾é€ Delivery
         public static final int STATUS_CREATED = 0;
         public static final int STATUS_PACK= 1;
         public static final int STATUS_TRANSPORT = 2;

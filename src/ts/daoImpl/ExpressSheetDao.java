@@ -23,7 +23,7 @@ public class ExpressSheetDao extends BaseDao<ExpressSheet,String> {
 	}
 
 
-	//»ñµÃÖ¸¶¨°ü¹üIDµÄËùÓĞ¿ì¼şÁĞ±í
+	//è·å¾—æŒ‡å®šåŒ…è£¹IDçš„æ‰€æœ‰å¿«ä»¶åˆ—è¡¨
 	public List<ExpressSheet> getListInPackage(String pkg_id) {
 		String sql = "{alias}.ID in (select ExpressID from TransPackageContent where PackageID = '"+pkg_id+"')";
 		List<ExpressSheet> list = new ArrayList<ExpressSheet>();

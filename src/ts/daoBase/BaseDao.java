@@ -15,14 +15,14 @@ import org.springframework.util.Assert;
 import ts.daoBase.IBaseDao;
 
 /**
- * Ìá¹©hibernate daoµÄËùÓĞ²Ù×÷ * 
+ * æä¾›hibernate daoçš„æ‰€æœ‰æ“ä½œ * 
  */
 @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW )
 public class BaseDao<T,PK extends Serializable> extends HibernateDaoSupport implements IBaseDao<T,PK> {
-	protected Class<T> entityClass;			// DAOËù¹ÜÀíµÄEntityÀàĞÍ.
+	protected Class<T> entityClass;			// DAOæ‰€ç®¡ç†çš„Entityç±»å‹.
     
     /**
-     *ÈÃspringÌá¹©¹¹Ôìº¯Êı×¢Èë
+     *è®©springæä¾›æ„é€ å‡½æ•°æ³¨å…¥
      */
     public BaseDao(Class<T> type) {
         this.entityClass = type;

@@ -121,7 +121,7 @@ public class DomainService implements IDomainService {
     }
 
     public Date getCurrentDate() {
-        // ²úÉúÒ»¸ö²»´øºÁÃëµÄÊ±¼ä,²»È»,SQLÊ±¼äºÍJAVAÊ±¼ä¸ñÊ½²»Ò»ÖÂ
+        // äº§ç”Ÿä¸€ä¸ªä¸å¸¦æ¯«ç§’çš„æ—¶é—´,ä¸ç„¶,SQLæ—¶é—´å’ŒJAVAæ—¶é—´æ ¼å¼ä¸ä¸€è‡´
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Date tm = new Date();
         try {
@@ -132,7 +132,7 @@ public class DomainService implements IDomainService {
         return tm;
     }
 
-    // »ñµÃ¿ì¼şÁĞ±í
+    // è·å¾—å¿«ä»¶åˆ—è¡¨
     @Override
     public List<ExpressSheet> getExpressList(String property, String restrictions, String value) {
         List<ExpressSheet> list = new ArrayList<ExpressSheet>();
@@ -168,7 +168,7 @@ public class DomainService implements IDomainService {
 //		return list;
 //	}
 
-    // gqb»ñµÃ°ü¹üÖĞµÄËùÓĞ¿ìµİµ¥
+    // gqbè·å¾—åŒ…è£¹ä¸­çš„æ‰€æœ‰å¿«é€’å•
     @Override
     public List<ExpressSheet> getExpressListInPackage(String packageId) {
         List<ExpressSheet> list = new ArrayList<ExpressSheet>();
@@ -176,14 +176,14 @@ public class DomainService implements IDomainService {
         return list;
     }
 
-    // gqb»ñµÃ¿ìµİµ¥
+    // gqbè·å¾—å¿«é€’å•
     @Override
     public Response getExpressSheet(String id) {
         ExpressSheet es = expressSheetDao.get(id);
         return Response.ok(es).header("EntityClass", "ExpressSheet").build();
     }
 
-    // ĞÂ½¨¿ìµİµ¥
+    // æ–°å»ºå¿«é€’å•
     @Override
     public Response newExpressSheet(String id, int uid) {
         ExpressSheet es = null;
@@ -194,9 +194,9 @@ public class DomainService implements IDomainService {
 
         if (es != null) {
 //			if(es.getStatus() != 0)
-//				return Response.ok(es).header("EntityClass", "L_ExpressSheet").build(); //ÒÑ¾­´æÔÚ,ÇÒ²»ÄÜ¸ü¸Ä
+//				return Response.ok(es).header("EntityClass", "L_ExpressSheet").build(); //å·²ç»å­˜åœ¨,ä¸”ä¸èƒ½æ›´æ”¹
 //			else
-//            return Response.ok("¿ì¼şÔËµ¥ĞÅÏ¢ÒÑ¾­´æÔÚ!\nÎŞ·¨´´½¨!").header("EntityClass", "E_ExpressSheet").build(); // ÒÑ¾­´æÔÚ
+//            return Response.ok("å¿«ä»¶è¿å•ä¿¡æ¯å·²ç»å­˜åœ¨!\næ— æ³•åˆ›å»º!").header("EntityClass", "E_ExpressSheet").build(); // å·²ç»å­˜åœ¨
         }
         try {
             String pkgId = userInfoDao.get(uid).getReceivePackageID();
@@ -211,7 +211,7 @@ public class DomainService implements IDomainService {
 //			pkg_add.setExpress(nes);
 //			nes.getTransPackageContent().add(pkg_add);
             expressSheetDao.save(nes);
-            // ·Åµ½ÊÕ¼ş°ü¹üÖĞ
+            // æ”¾åˆ°æ”¶ä»¶åŒ…è£¹ä¸­
             MoveExpressIntoPackage(nes.getID(), pkgId);
             return Response.ok(nes).header("EntityClass", "ExpressSheet").build();
         } catch (Exception e) {
@@ -219,7 +219,7 @@ public class DomainService implements IDomainService {
         }
     }
 
-    // gqb±£´æ¿ìµİµ¥
+    // gqbä¿å­˜å¿«é€’å•
     @Override
     public Response saveExpressSheet(ExpressSheet obj) {
         // System.out.println("ExpressSheet---" +obj);
@@ -245,24 +245,24 @@ public class DomainService implements IDomainService {
         }
     }
 
-    // gqbÀ¿ÊÕ¿ì¼ş
+    // gqbæ½æ”¶å¿«ä»¶
     @Override
     public Response receiveExpressSheet(ExpressSheet es, int uid) {
         // System.out.println("sss" + es + "dddd" + uid);
         try {
             if (es.getStatus() != ExpressSheet.STATUS.STATUS_CREATED) {
-                return Response.ok("¿ì¼şÔËµ¥×´Ì¬´íÎó!ÎŞ·¨ÊÕ¼ş!").header("EntityClass", "ER_ExpressSheet").build();
+                return Response.ok("å¿«ä»¶è¿å•çŠ¶æ€é”™è¯¯!æ— æ³•æ”¶ä»¶!").header("EntityClass", "ER_ExpressSheet").build();
             }
             es.setAccepter(String.valueOf(uid));
             es.setAccepteTime(getCurrentDate());
-            // ¸ü¸Ä¿ì¼ş×´Ì¬ÎªÀ¿ÊÕ×´Ì¬
+            // æ›´æ”¹å¿«ä»¶çŠ¶æ€ä¸ºæ½æ”¶çŠ¶æ€
             es.setStatus(ExpressSheet.STATUS.STATUS_COLLECT);// System.out.println(es);
             expressSheetDao.update(es);
 
             TransPackageContent transPackageContent = new TransPackageContent();
             transPackageContent.setExpress(es);
             transPackageContent.setPkg(transPackageDao.get(userInfoDao.get(uid).getReceivePackageID()));
-            // ¸ü¸Ä°ü¹üÄÚÈİÎªÒÆÈë°ü¹ü×´Ì¬
+            // æ›´æ”¹åŒ…è£¹å†…å®¹ä¸ºç§»å…¥åŒ…è£¹çŠ¶æ€
             transPackageContent.setStatus(TransPackageContent.STATUS.STATUS_ACTIVE);
             transPackageContentDao.save(transPackageContent);
 
@@ -272,19 +272,19 @@ public class DomainService implements IDomainService {
         }
     }
 
-    // ·Ö·¢¿ì¼ş
+    // åˆ†å‘å¿«ä»¶
     @Override
     public Response DispatchExpressSheet(String id, int uid) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    // gqb¿ì¼şÒÆÈë°ü¹ü
+    // gqbå¿«ä»¶ç§»å…¥åŒ…è£¹
     public Response MoveExpressIntoPackage(String id, String targetPkgId) {
         TransPackage targetPkg = transPackageDao.get(targetPkgId);
         ExpressSheet expressSheet = expressSheetDao.get(id);
         if (expressSheet.getStatus() == ExpressSheet.STATUS.STATUS_SORTING) {
-            // ¿ì¼ş´ò½ø°ü¹üºóĞèÒªÉèÎª×ªÔË×´Ì¬
+            // å¿«ä»¶æ‰“è¿›åŒ…è£¹åéœ€è¦è®¾ä¸ºè½¬è¿çŠ¶æ€
             expressSheet.setStatus(ExpressSheet.STATUS.STATUS_TRANSPORT);
             expressSheetDao.update(expressSheet);
 
@@ -293,48 +293,48 @@ public class DomainService implements IDomainService {
             pkg_add.setExpress(expressSheet);
             pkg_add.setStatus(TransPackageContent.STATUS.STATUS_ACTIVE);
             transPackageContentDao.save(pkg_add);
-            return Response.ok("¸Ã¿ì¼şÒÑ´ò°ü").header("EntityClass", "P_ExpressSheet").build();
+            return Response.ok("è¯¥å¿«ä»¶å·²æ‰“åŒ…").header("EntityClass", "P_ExpressSheet").build();
         } else {
-            return Response.ok("¸Ã¿ì¼şÎŞ·¨´ò°ü").header("EntityClass", "P_ExpressSheet").build();
+            return Response.ok("è¯¥å¿«ä»¶æ— æ³•æ‰“åŒ…").header("EntityClass", "P_ExpressSheet").build();
         }
     }
 
-    // gqb¿ì¼ş´Ó°ü¹üÖĞÒÆ³ı
+    // gqbå¿«ä»¶ä»åŒ…è£¹ä¸­ç§»é™¤
     @Override
     public Response MoveExpressFromPackage(String expressSheetID, String sourcePkgId) {
         ExpressSheet expressSheet = expressSheetDao.get(expressSheetID);
         if (expressSheet == null) {
-            return Response.ok("¿ì¼ş²»´æÔÚ").header("EntityClass", "U_ExpressSheet").build();
+            return Response.ok("å¿«ä»¶ä¸å­˜åœ¨").header("EntityClass", "U_ExpressSheet").build();
         }
         int expressSheetStatus = expressSheet.getStatus();
 
-        // µ±°ü¹üÎªĞÂ½¨£¬½»¸¶×´Ì¬Ê±
+        // å½“åŒ…è£¹ä¸ºæ–°å»ºï¼Œäº¤ä»˜çŠ¶æ€æ—¶
         if (expressSheetStatus == ExpressSheet.STATUS.STATUS_CREATED
                 || expressSheetStatus == ExpressSheet.STATUS.STATUS_PAY) {
-            return Response.ok("¸Ã¿ì¼şÎŞ·¨´Ó°ü¹üÖĞÒÆ³ö").header("EntityClass", "U_ExpressSheet").build();
+            return Response.ok("è¯¥å¿«ä»¶æ— æ³•ä»åŒ…è£¹ä¸­ç§»å‡º").header("EntityClass", "U_ExpressSheet").build();
         }
-        // µ±°ü¹üÎª·Ö¼ğ×´Ì¬Ê±
+        // å½“åŒ…è£¹ä¸ºåˆ†æ‹£çŠ¶æ€æ—¶
         if (expressSheetStatus == ExpressSheet.STATUS.STATUS_SORTING) {
-            return Response.ok("¸Ã¿ì¼şÒÑ¾­´Ó°ü¹üÖĞÒÆ³ö").header("EntityClass", "U_ExpressSheet").build();
+            return Response.ok("è¯¥å¿«ä»¶å·²ç»ä»åŒ…è£¹ä¸­ç§»å‡º").header("EntityClass", "U_ExpressSheet").build();
         }
 
         TransPackageContent transPackageContent = transPackageContentDao.get(expressSheetID, sourcePkgId);
         if (transPackageContent == null) {
-            return Response.ok("¿ì¼ş²»ÔÚ´Ë°ü¹üÖĞ").header("EntityClass", "U_ExpressSheet").build();
+            return Response.ok("å¿«ä»¶ä¸åœ¨æ­¤åŒ…è£¹ä¸­").header("EntityClass", "U_ExpressSheet").build();
         }
         
         expressSheet.setStatus(ExpressSheet.STATUS.STATUS_SORTING);
         expressSheetDao.update(expressSheet);
 
-        // ¸ü¸Ä°ü¹üÄÚÈİÎªÒÆ³ö°ü¹ü×´Ì¬
+        // æ›´æ”¹åŒ…è£¹å†…å®¹ä¸ºç§»å‡ºåŒ…è£¹çŠ¶æ€
         transPackageContent.setStatus(TransPackageContent.STATUS.STATUS_OUTOF_PACKAGE);
         transPackageContentDao.update(transPackageContent);
-        return Response.ok("¸Ã¿ì¼ş´Ó°ü¹üÖĞÒÆ³ö").header("EntityClass", "U_ExpressSheet").build();
+        return Response.ok("è¯¥å¿«ä»¶ä»åŒ…è£¹ä¸­ç§»å‡º").header("EntityClass", "U_ExpressSheet").build();
     }
 
-    // ¿ì¼şÔÚ°ü¹ü¼äÒÆ¶¯
+    // å¿«ä»¶åœ¨åŒ…è£¹é—´ç§»åŠ¨
     public boolean MoveExpressBetweenPackage(String id, String sourcePkgId, String targetPkgId) {
-        // ĞèÒª¼ÓÈëÊÂÎñ»úÖÆ
+        // éœ€è¦åŠ å…¥äº‹åŠ¡æœºåˆ¶
         MoveExpressFromPackage(id, sourcePkgId);
         MoveExpressIntoPackage(id, targetPkgId);
         return true;
@@ -347,29 +347,29 @@ public class DomainService implements IDomainService {
             String pkgId = userInfoDao.get(uid).getDelivePackageID();
             ExpressSheet nes = expressSheetDao.get(id);
             if (nes.getStatus() != ExpressSheet.STATUS.STATUS_TRANSPORT) {
-                return Response.ok("¿ì¼şÔËµ¥×´Ì¬´íÎó!ÎŞ·¨½»¸¶").header("EntityClass", "E_ExpressSheet").build();
+                return Response.ok("å¿«ä»¶è¿å•çŠ¶æ€é”™è¯¯!æ— æ³•äº¤ä»˜").header("EntityClass", "E_ExpressSheet").build();
             }
 
             if (transPackageContentDao.getSn(id, pkgId) == 0) {
-                // ÁÙÊ±µÄÒ»¸ö´¦Àí·½Ê½,¶ÏÂ·ÁË°ü¹üµÄ´«µİ¹ı³Ì,×Ô¼ºµÄ»õÀºµ¹ÌÚÒ»ÏÂ
+                // ä¸´æ—¶çš„ä¸€ä¸ªå¤„ç†æ–¹å¼,æ–­è·¯äº†åŒ…è£¹çš„ä¼ é€’è¿‡ç¨‹,è‡ªå·±çš„è´§ç¯®å€’è…¾ä¸€ä¸‹
                 MoveExpressBetweenPackage(id, userInfoDao.get(uid).getReceivePackageID(), pkgId);
-                return Response.ok("¿ì¼şÔËµ¥×´Ì¬´íÎó!\n¿ì¼şĞÅÏ¢Ã»ÔÚÄúµÄÅÉ¼ş°ü¹üÖĞ!").header("EntityClass", "E_ExpressSheet").build();
+                return Response.ok("å¿«ä»¶è¿å•çŠ¶æ€é”™è¯¯!\nå¿«ä»¶ä¿¡æ¯æ²¡åœ¨æ‚¨çš„æ´¾ä»¶åŒ…è£¹ä¸­!").header("EntityClass", "E_ExpressSheet").build();
             }
 
             nes.setDeliver(String.valueOf(uid));
             nes.setDeliveTime(getCurrentDate());
             nes.setStatus(ExpressSheet.STATUS.STATUS_DELIVERY);
             expressSheetDao.save(nes);
-            // ´ÓÅÉ¼ş°ü¹üÖĞÉ¾³ı
+            // ä»æ´¾ä»¶åŒ…è£¹ä¸­åˆ é™¤
             MoveExpressFromPackage(nes.getID(), pkgId);
-            // ¿ì¼şÃ»ÓĞÀúÊ·¼ÇÂ¼,ºÜÄÑ¸ø³öÊÕ¼şºÍ½»¸¶µÄ¼ÇÂ¼
+            // å¿«ä»¶æ²¡æœ‰å†å²è®°å½•,å¾ˆéš¾ç»™å‡ºæ”¶ä»¶å’Œäº¤ä»˜çš„è®°å½•
             return Response.ok(nes).header("EntityClass", "ExpressSheet").build();
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
-    // »ñµÃ°ü¹üÁĞ±í ÓĞ´íÎó£¬»áÑ­»·ÒıÓÃ
+    // è·å¾—åŒ…è£¹åˆ—è¡¨ æœ‰é”™è¯¯ï¼Œä¼šå¾ªç¯å¼•ç”¨
     @Override
     public List<TransPackage> getTransPackageList(String property, String restrictions, String value) {
         List<TransPackage> list = new ArrayList<TransPackage>();
@@ -384,14 +384,14 @@ public class DomainService implements IDomainService {
         return list;
     }
 
-    // gqb»ñµÃ°ü¹ü
+    // gqbè·å¾—åŒ…è£¹
     @Override
     public Response getTransPackage(String id) {
         TransPackage es = transPackageDao.get(id);
         return Response.ok(es).header("EntityClass", "TransPackage").build();
     }
 
-    // ĞÂ½¨°ü¹ü
+    // æ–°å»ºåŒ…è£¹
     @Override
     public Response newTransPackage(String id, int uid) {
         try {
@@ -406,7 +406,7 @@ public class DomainService implements IDomainService {
         }
     }
 
-    // gqb´ò°ü±£´æ°ü¹ü
+    // gqbæ‰“åŒ…ä¿å­˜åŒ…è£¹
     @Override
     public Response saveTransPackage(TransPackage obj) {
         try {
@@ -418,13 +418,13 @@ public class DomainService implements IDomainService {
         }
     }
 
-    // gqb»ñµÃ°ü¹ü×ø±êĞÅÏ¢
+    // gqbè·å¾—åŒ…è£¹åæ ‡ä¿¡æ¯
     @Override
     public List<PackageRoute> getPackageRouteList(String packageID) {
         return packageRouteDao.getPackageRouteList(packageID);
     }
 
-    // gqbÉèÖÃ°ü¹ü×ø±êĞÅÏ¢
+    // gqbè®¾ç½®åŒ…è£¹åæ ‡ä¿¡æ¯
     @Override
     public Response setPackageRoute(String packageID, float x, float y) {
         PackageRoute packageRoute = new PackageRoute();
@@ -436,42 +436,42 @@ public class DomainService implements IDomainService {
         return Response.ok("ok").header("EntityClass", "PackageRoute").build();
     }
 
-    // gqbÀ¿ÊÕ ´ò°ü¸ù¾İUID½¨Á¢°ü¹ü£¬»ñµÃreceivePackageID
+    // gqbæ½æ”¶ æ‰“åŒ…æ ¹æ®UIDå»ºç«‹åŒ…è£¹ï¼Œè·å¾—receivePackageID
     @Override
     public Response getReceivePackageID(String UID, int URull) {
-        // ÉèÖÃreceivePackageIDÎª UID + Ê±¼ä ¹²23Î»
+        // è®¾ç½®receivePackageIDä¸º UID + æ—¶é—´ å…±23ä½
         String receivePackageID = new StringBuilder(UID).append(System.currentTimeMillis()).toString();
-        // ÉèÖÃuserinfo±íµÄreceivePackageID, URull²¢·µ»ØDptID
+        // è®¾ç½®userinfoè¡¨çš„receivePackageID, URullå¹¶è¿”å›DptID
         String dptID = userInfoDao.setReceivePackageID(UID, receivePackageID, URull);
         // System.out.println(dptID);
-        // ÉèÖÃtranspackage²¢¸³ÖµIDºÍTargetNode(=DptID) ²¢±£´æ
+        // è®¾ç½®transpackageå¹¶èµ‹å€¼IDå’ŒTargetNode(=DptID) å¹¶ä¿å­˜
         TransPackage transPackage = new TransPackage();
         transPackage.setID(receivePackageID);
         if (URull == UserInfo.URull.URull_COLLECT) {
             transPackage.setSourceNode(dptID);
             transPackage.setTargetNode(dptID);
-            // ÉèÖÃ°ü¹üÎªÀ¿ÊÕ×´Ì¬
+            // è®¾ç½®åŒ…è£¹ä¸ºæ½æ”¶çŠ¶æ€
             transPackage.setStatus(TransPackage.STATUS.STATUS_COLLECT);
         } else if (URull == UserInfo.URull.URull_PACKING) {
-            // ÉèÖÃ°ü¹üÎª´ò°ü×´Ì¬
+            // è®¾ç½®åŒ…è£¹ä¸ºæ‰“åŒ…çŠ¶æ€
             transPackage.setStatus(TransPackage.STATUS.STATUS_CREATED);
         }
         transPackage.setCreateTime(getCurrentDate());
         transPackageDao.save(transPackage);
-        // ÉèÖÃuserspackage
+        // è®¾ç½®userspackage
         UsersPackage usersPackage = new UsersPackage();
         usersPackage.setUserU(userInfoDao.get(Integer.parseInt(UID)));
         usersPackage.setPkg(transPackage);
         usersPackageDao.save(usersPackage);
         if (URull == UserInfo.URull.URull_PACKING) {
-            // ´ò°ü·µ»Ø
+            // æ‰“åŒ…è¿”å›
             return Response.ok(transPackage).header("EntityClass", "PackingPackageID").build();
         }
-        // Ä¬ÈÏÀ¿ÊÕ·µ»Ø
+        // é»˜è®¤æ½æ”¶è¿”å›
         return Response.ok(receivePackageID).header("EntityClass", "ReceivePackageID").build();
     }
 
-    // gqbÇåÀí¿ìµİÔ±Èı¸öPackageID
+    // gqbæ¸…ç†å¿«é€’å‘˜ä¸‰ä¸ªPackageID
     @Override
     public Response cleanPackageID(String UID, String flag) {
         UserInfo userInfo = userInfoDao.get(Integer.parseInt(UID));
@@ -486,24 +486,24 @@ public class DomainService implements IDomainService {
             userInfo.setTransPackageID(null);
         }
         userInfoDao.update(userInfo);
-        return Response.ok("É¾³ı³É¹¦").header("EntityClass", "PackageID").build();
+        return Response.ok("åˆ é™¤æˆåŠŸ").header("EntityClass", "PackageID").build();
 
     }
 
-    // gqb¿ìµİÔ±»ñµÃÈÎÎñÁĞ±í ´ıÍê³É¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£
+    // gqbå¿«é€’å‘˜è·å¾—ä»»åŠ¡åˆ—è¡¨ å¾…å®Œæˆã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚ã€‚
     @Override
     public List<ExpressSheet> getTaskList(String UID) {
         List<ExpressSheet> expressSheetList = null;
         UserInfo userInfo = userInfoDao.get(Integer.parseInt(UID));
-        // »ñµÃÓÃ»§½ÇÉ«
+        // è·å¾—ç”¨æˆ·è§’è‰²
         int uRull = userInfo.getURull();
 
-//        // »ñÈ¡¿ìµİÔ±ËùÔÚÇøÓòregionCode
+//        // è·å–å¿«é€’å‘˜æ‰€åœ¨åŒºåŸŸregionCode
 //        String regionCode = userInfo.getDptID().substring(0, 6);
 //        List<CustomerInfo> customerInfoList = customerInfoDao.findByRegionCode(regionCode);
 //        for (CustomerInfo customerInfo : customerInfoList) {
 //            int ID = customerInfo.getID();
-//            // »ñÈ¡senderÎªid ºÍ statusÎª0 µÄ¿ì¼ş
+//            // è·å–senderä¸ºid å’Œ statusä¸º0 çš„å¿«ä»¶
 //            List<ExpressSheet> list = expressSheetDao.findBySenderAndStatus(ID);
 //            expressSheetList.addAll(list);
 //        }
@@ -511,30 +511,30 @@ public class DomainService implements IDomainService {
 
     }
 
-    // gqb¿ìµİÔ±²ğ°ü½Ó¿Ú
+    // gqbå¿«é€’å‘˜æ‹†åŒ…æ¥å£
     @Override
     public Response unpacking(String UID, String PackageID, float x, float y) {
-        // ¸ù¾İpackageIDÌáÈ¡ÅÉËÍÈËÔ±UID
+        // æ ¹æ®packageIDæå–æ´¾é€äººå‘˜UID
         int lastUID = usersPackageDao.getUIDByPackageID(PackageID);
         if (lastUID == 0) {
-            return Response.ok("°ü¹ü²»´æÔÚ").header("EntityClass", "UnpackPackageID").build();
+            return Response.ok("åŒ…è£¹ä¸å­˜åœ¨").header("EntityClass", "UnpackPackageID").build();
         }
-        // ÉèÖÃ²ğ°üÈËÔ±
+        // è®¾ç½®æ‹†åŒ…äººå‘˜
         UserInfo userInfo = userInfoDao.get(Integer.parseInt(UID));
         userInfo.setDelivePackageID(PackageID);
         userInfo.setURull(UserInfo.URull.URull_UNPACKING);
         userInfoDao.update(userInfo);
-        // ¸ü¸Ä°ü¹ü×´Ì¬
+        // æ›´æ”¹åŒ…è£¹çŠ¶æ€
         TransPackage transPackage = transPackageDao.get(PackageID);
-        // °ü¹üÎª·Ö¼ğ×´Ì¬
+        // åŒ…è£¹ä¸ºåˆ†æ‹£çŠ¶æ€
         transPackage.setStatus(TransPackage.STATUS.STATUS_SORTING);
         transPackageDao.update(transPackage);
-        // Ìí¼Óµ½usersPackage
+        // æ·»åŠ åˆ°usersPackage
         UsersPackage usersPackage = new UsersPackage();
         usersPackage.setUserU(userInfo);
         usersPackage.setPkg(transPackage);
         usersPackageDao.save(usersPackage);
-        // Ìí¼Óµ½transHistory
+        // æ·»åŠ åˆ°transHistory
         TransHistory transHistory = new TransHistory();
         transHistory.setPkg(transPackage);
         transHistory.setActTime(getCurrentDate());
@@ -547,7 +547,7 @@ public class DomainService implements IDomainService {
         return Response.ok(PackageID).header("EntityClass", "UnpackPackageID").build();
     }
 
-    // gqb¿ìµİÔ±ĞŞ¸ÄĞÅÏ¢
+    // gqbå¿«é€’å‘˜ä¿®æ”¹ä¿¡æ¯
     @Override
     public Response changeUserInfo(UserInfo userInfo) {
         UserInfo oldUserInfo = userInfoDao.get(userInfo.getUID());
@@ -559,14 +559,14 @@ public class DomainService implements IDomainService {
         return Response.ok(oldUserInfo).header("EntityClass", "UserInfo").build();
     }
 
-    // gqb»ñÈ¡¿ìµİÔ±ĞÅÏ¢ÁĞ±í
+    // gqbè·å–å¿«é€’å‘˜ä¿¡æ¯åˆ—è¡¨
     @Override
     public List<UserInfo> getUserInfoList() {
         List<UserInfo> list = userInfoDao.getAll("UID", true);
         return list;
     }
 
-    // gqb¸ù¾İÊÖ»úºÅ²éÑ¯ÀúÊ·ÔËµ¥
+    // gqbæ ¹æ®æ‰‹æœºå·æŸ¥è¯¢å†å²è¿å•
     public HashSet<ExpressSheet> getExpressSheetByTelCode(String telCode) {
         HashSet<ExpressSheet> list = new HashSet<ExpressSheet>();
         List<CustomerInfo> customerInfos = customerInfoDao.findByTelCode(telCode);
@@ -579,14 +579,14 @@ public class DomainService implements IDomainService {
         return list;
     }
 
-    // gqb×ªÔË¸ù¾İID»ñÈ¡²¢¸üĞÂ°ü¹ü
+    // gqbè½¬è¿æ ¹æ®IDè·å–å¹¶æ›´æ–°åŒ…è£¹
     public Response getTransportPackage(int UID, String PackageId) {
         TransPackage transPackage = transPackageDao.get(PackageId);
         if (transPackage == null) {
-            return Response.ok("°ü¹ü²»´æÔÚ").header("EntityClass", "TransPackage").build();
+            return Response.ok("åŒ…è£¹ä¸å­˜åœ¨").header("EntityClass", "TransPackage").build();
         }
         if (transPackage.getStatus() != TransPackage.STATUS.STATUS_PACK) {
-            return Response.ok("°ü¹ü×´Ì¬´íÎó").header("EntityClass", "TransPackage").build();
+            return Response.ok("åŒ…è£¹çŠ¶æ€é”™è¯¯").header("EntityClass", "TransPackage").build();
         }
         TransHistory transHistory = new TransHistory();
         transPackage.setStatus(TransPackage.STATUS.STATUS_TRANSPORT);
@@ -596,7 +596,7 @@ public class DomainService implements IDomainService {
         transHistory.setPkg(transPackage);
         transHistory.setUIDFrom(usersPackageDao.getUIDByPackageID(PackageId));
         transHistory.setUIDTo(UID);
-        // ¸ù¾İ°ü¹üÖĞsourceNode»ñµÃ½Úµãx£¬y
+        // æ ¹æ®åŒ…è£¹ä¸­sourceNodeè·å¾—èŠ‚ç‚¹xï¼Œy
         TransNode transNode = transNodeDao.get(transPackage.getSourceNode());
         transHistory.setX(transNode.getX());
         transHistory.setY(transNode.getY());
@@ -625,7 +625,7 @@ public class DomainService implements IDomainService {
         return Response.ok(transPackage).header("EntityClass", "TransPackage").build();
     }
 
-    // gqb »ñµÃ×ªÔË°ü¹ü
+    // gqb è·å¾—è½¬è¿åŒ…è£¹
     @Override
     public HashSet<TransPackage> getTransPackageList(int UID) {
         HashSet<TransPackage> set = new HashSet<TransPackage>();
@@ -638,15 +638,15 @@ public class DomainService implements IDomainService {
         return set;
     }
 
-    // gqb »ñµÃÅÉËÍ°ü¹ü
+    // gqb è·å¾—æ´¾é€åŒ…è£¹
     @Override
     public Response getDeliverPackageID(int UID, String PackageId) {
         TransPackage transPackage = transPackageDao.get(PackageId);
         if (transPackage == null) {
-            return Response.ok("°ü¹ü²»´æÔÚ").header("EntityClass", "DeliverPackage").build();
+            return Response.ok("åŒ…è£¹ä¸å­˜åœ¨").header("EntityClass", "DeliverPackage").build();
         }
         if (transPackage.getStatus() != TransPackage.STATUS.STATUS_PACK) {
-            return Response.ok("°ü¹ü×´Ì¬´íÎó").header("EntityClass", "DeliverPackage").build();
+            return Response.ok("åŒ…è£¹çŠ¶æ€é”™è¯¯").header("EntityClass", "DeliverPackage").build();
         }
         transPackage.setStatus(TransPackage.STATUS.STATUS_DELIVERY);
         transPackageDao.update(transPackage);
@@ -661,7 +661,7 @@ public class DomainService implements IDomainService {
         transHistory.setPkg(transPackage);
         transHistory.setUIDFrom(usersPackageDao.getUIDByPackageID(PackageId));
         transHistory.setUIDTo(UID);
-        // ¸ù¾İ°ü¹üÖĞsourceNode»ñµÃ½Úµãx£¬y
+        // æ ¹æ®åŒ…è£¹ä¸­sourceNodeè·å¾—èŠ‚ç‚¹xï¼Œy
         TransNode transNode = transNodeDao.get(transPackage.getSourceNode());
         transHistory.setX(transNode.getX());
         transHistory.setY(transNode.getY());
@@ -690,13 +690,13 @@ public class DomainService implements IDomainService {
         return Response.ok(transPackage).header("EntityClass", "DeliverPackage").build();
     }
     
-    //gqb ÑéÊÕ
+    //gqb éªŒæ”¶
     @Override
     public Response acceptExpressSheet(ExpressSheet expressSheet, String UID) {
         expressSheet.setStatus(ExpressSheet.STATUS.STATUS_PAY);
         expressSheet.setDeliver(UID);
         expressSheet.setDeliveTime(getCurrentDate());
         expressSheetDao.update(expressSheet);
-        return Response.ok("ÑéÊÕ³É¹¦").header("EntityClass", "acceptExpressSheet").build();
+        return Response.ok("éªŒæ”¶æˆåŠŸ").header("EntityClass", "acceptExpressSheet").build();
     }
 }

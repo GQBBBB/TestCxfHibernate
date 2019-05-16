@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class ServiceExceptionEntity implements Serializable {
     /** 
-     * ×¢ÊÍÄÚÈİ 
+     * æ³¨é‡Šå†…å®¹ 
      */  
     private static final long serialVersionUID = 1L;  
   
@@ -17,10 +17,10 @@ public class ServiceExceptionEntity implements Serializable {
         this.message = message;  
     }  
       
-    /*´íÎóÂë£¬Ä¬ÈÏÎª0*/  
+    /*é”™è¯¯ç ï¼Œé»˜è®¤ä¸º0*/  
     private int errCode;  
       
-    /*´íÎó×ÓÂë£¬×Ô¶¨Òå¸ÃÖµ*/  
+    /*é”™è¯¯å­ç ï¼Œè‡ªå®šä¹‰è¯¥å€¼*/  
     private String errSubCode;  
       
     private String message;  

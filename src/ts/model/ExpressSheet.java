@@ -266,12 +266,12 @@ public class ExpressSheet implements Serializable {
 	}
 	
 	public static final class STATUS{
-//	    0,ĞÂ½¨ Create
-//	    1,À¿ÊÕ Collect
-//	    2,·Ö¼ğ Sorting
-//	    3,×ªÔË  transport
-//	    4,ÅÉËÍ Delivery
-//	    5,½»¸¶ pay
+//	    0,æ–°å»º Create
+//	    1,æ½æ”¶ Collect
+//	    2,åˆ†æ‹£ Sorting
+//	    3,è½¬è¿  transport
+//	    4,æ´¾é€ Delivery
+//	    5,äº¤ä»˜ pay
 		public static final int STATUS_CREATED = 0;
 		public static final int STATUS_COLLECT = 1;
 		public static final int STATUS_SORTING = 2;

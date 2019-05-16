@@ -168,12 +168,12 @@ public class UserInfo implements Serializable {
 	}
 	
 	public static final class URull{
-//      0,ĞİÏ¢ Sleep
-//      1,À¿ÊÕ Collect
-//      2,²ğ°ü Unpacking 
-//      3,×ªÔË transport
-//      4,ÅÉËÍ Delivery
-//      5,´ò°ü packing
+//      0,ä¼‘æ¯ Sleep
+//      1,æ½æ”¶ Collect
+//      2,æ‹†åŒ… Unpacking 
+//      3,è½¬è¿ transport
+//      4,æ´¾é€ Delivery
+//      5,æ‰“åŒ… packing
         public static final int URull_SLEEP = 0;
         public static final int URull_COLLECT = 1;
         public static final int URull_UNPACKING = 2;

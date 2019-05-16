@@ -8,67 +8,67 @@ import java.util.List;
 
 import org.hibernate.criterion.Criterion;
 /**
- * Ìá¹©hibernate daoµÄËùÓĞ²Ù×÷,<br>
- * ÊµÏÖÀàÓÉspring×¢ÈëHibernateEntityDaoºÍHibernateGenericDaoÀ´ÊµÏÖ
+ * æä¾›hibernate daoçš„æ‰€æœ‰æ“ä½œ,<br>
+ * å®ç°ç±»ç”±springæ³¨å…¥HibernateEntityDaoå’ŒHibernateGenericDaoæ¥å®ç°
  * 
  */
 public interface IBaseDao<T,PK extends Serializable> {
 	
     /**
-     * ¸ù¾İID»ñÈ¡¶ÔÏó. Êµ¼Êµ÷ÓÃHibernateµÄsession.load()·½·¨·µ»ØÊµÌå»òÆäproxy¶ÔÏó. Èç¹û¶ÔÏó²»´æÔÚ£¬Å×³öÒì³£.
+     * æ ¹æ®IDè·å–å¯¹è±¡. å®é™…è°ƒç”¨Hibernateçš„session.load()æ–¹æ³•è¿”å›å®ä½“æˆ–å…¶proxyå¯¹è±¡. å¦‚æœå¯¹è±¡ä¸å­˜åœ¨ï¼ŒæŠ›å‡ºå¼‚å¸¸.
      */
     public T get(PK id);
 
     /**
-     * »ñÈ¡È«²¿¶ÔÏó
+     * è·å–å…¨éƒ¨å¯¹è±¡
      * 
      * @see HibernateGenericDao#getAll(Class)
      */
     public List<T> getAll();
     
     /**
-     * »ñÈ¡È«²¿¶ÔÏó,´øÅÅĞò²ÎÊı.
+     * è·å–å…¨éƒ¨å¯¹è±¡,å¸¦æ’åºå‚æ•°.
      */
     public List<T> getAll(String orderBy, boolean isAsc);
     
     /**
-     * ¸ù¾İÊôĞÔÃûºÍÊôĞÔÖµ²éÑ¯¶ÔÏó.
+     * æ ¹æ®å±æ€§åå’Œå±æ€§å€¼æŸ¥è¯¢å¯¹è±¡.
      * 
-     * @return ·ûºÏÌõ¼şµÄ¶ÔÏóÁĞ±í
+     * @return ç¬¦åˆæ¡ä»¶çš„å¯¹è±¡åˆ—è¡¨
      */
     public List<T> findBy(String orderBy, boolean isAsc, Criterion... criterions);
    
     /**
-     * ¸ù¾İÊôĞÔÃûºÍÊôĞÔÖµ²éÑ¯¶ÔÏó,´øÅÅĞò²ÎÊı.
+     * æ ¹æ®å±æ€§åå’Œå±æ€§å€¼æŸ¥è¯¢å¯¹è±¡,å¸¦æ’åºå‚æ•°.
      * 
-     * @return ·ûºÏÌõ¼şµÄ¶ÔÏóÁĞ±í
+     * @return ç¬¦åˆæ¡ä»¶çš„å¯¹è±¡åˆ—è¡¨
      */
     public List<T> findBy(String propertyName, Object value, String orderBy, boolean isAsc);
     
     public List<T> findLike(String propertyName, Object value, String orderBy, boolean isAsc);
     
     /**
-     * ±£´æ¶ÔÏó.
+     * ä¿å­˜å¯¹è±¡.
      */
     public void save(T entity);
     
     /**
-     * ÔÚ²»Í¬µÄsessionÖĞ¹ØÁªĞŞ¸Ä¹ıµÄÍĞ¹Ü¶ÔÏó
+     * åœ¨ä¸åŒçš„sessionä¸­å…³è”ä¿®æ”¹è¿‡çš„æ‰˜ç®¡å¯¹è±¡
      */
     public void update(T entity);
 
     /**
-     * É¾³ı¶ÔÏó.
+     * åˆ é™¤å¯¹è±¡.
      */
     public void remove(T entity);
     
     /**
-     * ¸ù¾İIDÒÆ³ı¶ÔÏó.
+     * æ ¹æ®IDç§»é™¤å¯¹è±¡.
      */
     public void removeById(PK id);
     
     /**
-     * Ïû³ıÓë Hibernate Session µÄ¹ØÁª
+     * æ¶ˆé™¤ä¸ Hibernate Session çš„å…³è”
      * 
      */
     public void evit(T entity);

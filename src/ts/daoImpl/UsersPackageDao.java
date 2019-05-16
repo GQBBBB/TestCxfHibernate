@@ -12,7 +12,7 @@ public class UsersPackageDao extends BaseDao<UsersPackage, Integer> {
         super(UsersPackage.class);
     }
 
-    // 根据packageID获取userUID
+    // 鏍规嵁packageID鑾峰彇userUID
     public int getUIDByPackageID(String id) {
         String sql = "PackageID = '" + id + "'";
         List<UsersPackage> list = findBy("SN", true, Restrictions.sqlRestriction(sql));

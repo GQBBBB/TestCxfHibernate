@@ -12,7 +12,7 @@ public class RegionDao  extends BaseDao<Region, String>{
 		super(Region.class);
 	}
 	/**
-     * »ñÈ¡´øÓĞÈ«ÃûµÄĞĞÕşÇø¶ÔÏó
+     * è·å–å¸¦æœ‰å…¨åçš„è¡Œæ”¿åŒºå¯¹è±¡
      */
 	public Region getFullNameRegionByID(String ID){
 		String id_tmp = "";
@@ -37,7 +37,7 @@ public class RegionDao  extends BaseDao<Region, String>{
 	}
 	
 	/**
-     * »ñÈ¡ĞĞÕşÇøÈ«ÃûµÄ×Ö·û´®
+     * è·å–è¡Œæ”¿åŒºå…¨åçš„å­—ç¬¦ä¸²
      */
 	public String getRegionNameByID(String ID) {
 		Region rg = getFullNameRegionByID(ID);
@@ -53,7 +53,7 @@ public class RegionDao  extends BaseDao<Region, String>{
 	}
 
 	/**
-     * »ñÈ¡Ê¡
+     * è·å–çœ
      */
 	public List<Region> getProvinceList() {
 		List<Region> listrg = findBy("stage", 1, "regionCode", true);
@@ -61,7 +61,7 @@ public class RegionDao  extends BaseDao<Region, String>{
 	}
 
 	/**
-     * »ñÈ¡ÊĞ
+     * è·å–å¸‚
      */
 	public List<Region> getCityList(String ID) {
 		String sid = ID.substring(0, 2).concat("%");
@@ -70,7 +70,7 @@ public class RegionDao  extends BaseDao<Region, String>{
 	}
 	
 	/**
-     * »ñÈ¡ÏØ
+     * è·å–å¿
      */
 	public List<Region> getTownList(String ID) {
 		String sid = ID.substring(0, 4).concat("%");

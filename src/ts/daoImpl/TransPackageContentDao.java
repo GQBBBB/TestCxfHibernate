@@ -40,7 +40,7 @@ public class TransPackageContentDao extends BaseDao<TransPackageContent, Integer
         return;
     }
 
-    // ÉèÖÃ°ü¹üÖÐ¿ì¼þ×´Ì¬
+    // è®¾ç½®åŒ…è£¹ä¸­å¿«ä»¶çŠ¶æ€
     public List<TransPackageContent> getExpressSheetList(String PackageId) {
         String sql = "PackageID = " + PackageId;
         List<TransPackageContent> transPackageContents = new ArrayList<TransPackageContent>();
