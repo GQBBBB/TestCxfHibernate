@@ -18,9 +18,9 @@ import ts.model.PackageRoute;
 import ts.model.TransPackage;
 import ts.model.UserInfo;
 
-@Path("/Domain") // ÒµÎñ²Ù×÷
+@Path("/Domain") // ä¸šåŠ¡æ“ä½œ
 public interface IDomainService {
-    // ¿ì¼ş²Ù×÷·ÃÎÊ½Ó¿Ú=======================================================================
+    // å¿«ä»¶æ“ä½œè®¿é—®æ¥å£=======================================================================
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/getExpressList/{Property}/{Restrictions}/{Value}")
@@ -73,7 +73,7 @@ public interface IDomainService {
     @Path("/getExpressSheetByTelCode/{telCode}")
     public HashSet<ExpressSheet> getExpressSheetByTelCode(@PathParam("telCode") String telCode);
 
-    // °ü¹ü²Ù×÷·ÃÎÊ½Ó¿Ú=======================================================================
+    // åŒ…è£¹æ“ä½œè®¿é—®æ¥å£=======================================================================
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/getTransPackageList/{Property}/{Restrictions}/{Value}")
@@ -95,7 +95,7 @@ public interface IDomainService {
     @Path("/saveTransPackage")
     public Response saveTransPackage(TransPackage obj);
 
-    // °ü¹ü×ø±êĞÅÏ¢²Ù×÷·ÃÎÊ½Ó¿Ú=======================================================================
+    // åŒ…è£¹åæ ‡ä¿¡æ¯æ“ä½œè®¿é—®æ¥å£=======================================================================
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/getPackageRouteList/{PackageID}")
@@ -107,7 +107,7 @@ public interface IDomainService {
     public Response setPackageRoute(@PathParam("PackageID") String packageID, @PathParam("x") float x,
             @PathParam("y") float y);
 
-    // ¿ìµİÔ±À¿ÊÕ°ü¹ü·ÃÎÊ½Ó¿Ú=======================================================================
+    // å¿«é€’å‘˜æ½æ”¶åŒ…è£¹è®¿é—®æ¥å£=======================================================================
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/getReceivePackageID/{UID}/{URull}")
@@ -125,7 +125,7 @@ public interface IDomainService {
     @Path("/getTaskList/{UID}")
     public List<ExpressSheet> getTaskList(@PathParam("UID") String UID);
 
-    // ¿ìµİÔ±²ğ°ü½Ó¿Ú=======================================================================
+    // å¿«é€’å‘˜æ‹†åŒ…æ¥å£=======================================================================
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -133,7 +133,7 @@ public interface IDomainService {
     public Response unpacking(@PathParam("UID") String UID, @PathParam("PackageID") String PackageID,
             @PathParam("x") float x, @PathParam("y") float y);
 
-    // ¿ì¼ş´Ó°ü¹üÖĞÒÆ³ı
+    // å¿«ä»¶ä»åŒ…è£¹ä¸­ç§»é™¤
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -141,7 +141,7 @@ public interface IDomainService {
     public Response MoveExpressFromPackage(@PathParam("expressSheetID") String expressSheetID,
             @PathParam("sourcePkgId") String sourcePkgId);
     
-    // ¿ì¼şÒÆÈë°ü¹ü
+    // å¿«ä»¶ç§»å…¥åŒ…è£¹
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -149,7 +149,7 @@ public interface IDomainService {
     public Response MoveExpressIntoPackage(@PathParam("expressSheetID") String expressSheetID,
             @PathParam("targetPkgId") String targetPkgId);
 
-    // ¿ìµİÔ±ĞÅÏ¢½Ó¿Ú=======================================================================
+    // å¿«é€’å‘˜ä¿¡æ¯æ¥å£=======================================================================
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -162,7 +162,7 @@ public interface IDomainService {
     @Path("/getUserInfoList")
     public List<UserInfo> getUserInfoList();
 
-    // ÔËÊäÔ±»ñµÃ¸ù¾İID»ñµÃ×ªÔË°ü¹ü¶ÔÏó
+    // è¿è¾“å‘˜è·å¾—æ ¹æ®IDè·å¾—è½¬è¿åŒ…è£¹å¯¹è±¡
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
@@ -175,13 +175,13 @@ public interface IDomainService {
     @Path("/getTransPackageList/{UID}")
     public HashSet<TransPackage> getTransPackageList(@PathParam("UID") int UID);
     
-    // ¿ìµİÔ±ÅÉËÍ°ü¹ü·ÃÎÊ½Ó¿Ú=======================================================================
+    // å¿«é€’å‘˜æ´¾é€åŒ…è£¹è®¿é—®æ¥å£=======================================================================
     @GET
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/getDeliverPackageID/{UID}/{PackageId}")
     public Response getDeliverPackageID(@PathParam("UID") int UID, @PathParam("PackageId") String PackageId);
     
-     // ÑéÊÕ°ü¹ü·ÃÎÊ½Ó¿Ú=======================================================================
+     // éªŒæ”¶åŒ…è£¹è®¿é—®æ¥å£=======================================================================
     @POST
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/acceptExpressSheet/{UID}")
