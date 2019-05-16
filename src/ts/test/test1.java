@@ -6,7 +6,7 @@ public class test1 {
 
     @Test
     public void m1() {
-        System.out.println( System.currentTimeMillis());
+        System.out.println("测试" + System.currentTimeMillis());
     }
 
 }
